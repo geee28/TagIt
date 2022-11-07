@@ -17,6 +17,15 @@
         android:theme="@style/Theme.DryRunTagToFile"
         tools:targetApi="31">
         <activity
+            android:name=".TagsListActivity"
+            android:exported="false"
+            android:label="@string/title_activity_tag_list"
+            android:theme="@style/Theme.DryRunTagToFile.NoActionBar">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".FileListActivity"
             android:exported="false">
             <meta-data

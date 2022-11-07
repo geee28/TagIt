@@ -22,7 +22,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Find Components
         MaterialButton filesBtn = findViewById(R.id.filesButton);
+        MaterialButton tagsBtn = findViewById(R.id.tagsButton);
+
+        //Click on FILES button
         filesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -30,6 +34,19 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this, FileListActivity.class);
                     String path = Environment.getExternalStorageDirectory().getPath();
                     intent.putExtra("path",path);
+                    startActivity(intent);
+                }else{ //permission denied
+                    requestPermission();
+                }
+            }
+        });
+
+        //Click on TAGS button
+        tagsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(checkPermission()){
+                    Intent intent = new Intent(MainActivity.this, TagsListActivity.class);
                     startActivity(intent);
                 }else{ //permission denied
                     requestPermission();
@@ -49,7 +66,8 @@ public class MainActivity extends AppCompatActivity {
     private void requestPermission(){
         if(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
             Toast.makeText(MainActivity.this, "Storage permissions required", Toast.LENGTH_LONG).show();
-        }else
+            return ;
+        }
         ActivityCompat.requestPermissions(MainActivity.this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1000);
     }
 }
