@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
                 if(checkPermission()){
                     Intent intent = new Intent(MainActivity.this, FileListActivity.class);
                     String path = Environment.getExternalStorageDirectory().getPath();
-                    intent.putExtra("path",path);
+                    intent.putExtra("path", path);
                     startActivity(intent);
                 }else{ //permission denied
                     requestPermission();

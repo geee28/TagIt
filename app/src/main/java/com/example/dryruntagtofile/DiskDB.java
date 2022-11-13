@@ -14,7 +14,7 @@ import java.util.LinkedHashSet;
 public class DiskDB extends SQLiteOpenHelper {
 
     private static final String databaseName = "test_ftr";
-    private static final int databaseVersion = 5;
+    private static final int databaseVersion = 1;
     private static String tableTags = Schema.tableTags;
     private static String tableTagToFiles = Schema.tableTagToFiles;
     private static String tableFilesToTag = Schema.tableFileToTags;

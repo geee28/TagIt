@@ -1,12 +1,12 @@
 package com.example.dryruntagtofile;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.File;
@@ -33,9 +33,8 @@ public class FileListActivity extends AppCompatActivity {
             return;
         }
         noFilesText.setVisibility(View.INVISIBLE);
-
+        MyAdapter fileBrowser = new MyAdapter(getApplicationContext(), filesAndFolders);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new MyAdapter(getApplicationContext(),filesAndFolders));
-
+        recyclerView.setAdapter(fileBrowser);
     }
 }
