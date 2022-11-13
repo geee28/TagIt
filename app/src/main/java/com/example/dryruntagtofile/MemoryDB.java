@@ -10,16 +10,6 @@ import java.util.Iterator;
 
 import kotlin.jvm.Synchronized;
 
-class Tag{
-    public int tagId;
-    public String name;
-
-    public Tag(int id, String name){
-        this.tagId = id;
-        this.name = name;
-    }
-}
-
 public class MemoryDB {
     private static MemoryDB instance = null;
     private HashMap<String, LinkedHashSet<Integer>> taggedFiles = null;
@@ -55,13 +45,8 @@ public class MemoryDB {
         }
     }
 
-    public Tag[] getTagList(){
-        String[] keys = tags.keySet().toArray(new String[0]);
-        Tag[] tagList = new Tag[keys.length];
-        for (int i = 0; i < keys.length; i++) {
-            tagList[i] = new Tag(tags.get(keys[i]), keys[i]);
-        }
-        return tagList;
+    public String[] getTagList(){
+        return tags.keySet().toArray(new String[0]);
     }
 
     public void addTag(String tagName){
