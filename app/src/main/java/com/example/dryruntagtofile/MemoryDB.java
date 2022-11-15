@@ -45,6 +45,10 @@ public class MemoryDB {
         }
     }
 
+    public ArrayList<String> getTags(){
+        return new ArrayList(tags.keySet());
+    }
+
     public void addTag(String tagName){
         int id = diskDB.addTag(tagName);
 
@@ -78,6 +82,7 @@ public class MemoryDB {
         }
         diskDB.detachTag(tagId, filePath);
         taggedFiles.get(filePath).remove(tagId);
+        if(taggedFiles.get(filePath).isEmpty()) taggedFiles.remove(filePath);
         return getTagsForFile(filePath);
     }
 
@@ -86,8 +91,10 @@ public class MemoryDB {
         if(id == -1){
             throw new Exception("Action Failed : No such tag exists");
         }
-        diskDB.attachTag(filePath, id, true);
         if(taggedFiles.containsKey(filePath)){
+            if(taggedFiles.get(filePath).contains(id)) {
+                return getTagsForFile(filePath);
+            };
             LinkedHashSet<Integer> fileTags = new LinkedHashSet<>();
             fileTags.add(id);
             fileTags.addAll(taggedFiles.get(filePath));

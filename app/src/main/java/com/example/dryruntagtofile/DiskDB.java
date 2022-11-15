@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 
@@ -121,6 +123,15 @@ public class DiskDB extends SQLiteOpenHelper {
         }
     }
 
+    private String removeFromTagList(int tagId, String[] tagList){
+        ArrayList<String> list = new ArrayList<>(Arrays.asList(tagList));
+        list.remove(String.valueOf(tagId));
+        String updatedTagList = list.toString().replaceAll("\\s", "");
+        updatedTagList = updatedTagList.substring(1, updatedTagList.length()-1);
+        return updatedTagList;
+    }
+
+
     public void detachTag(int tagId, String filePath) throws Exception {
         db.beginTransaction();
         ContentValues updatedRow = new ContentValues();
@@ -139,9 +150,10 @@ public class DiskDB extends SQLiteOpenHelper {
             // remove tagId and update database
             c = db.query(tableFilesToTag, new String[]{Schema.FileToTags.tags}, Schema.FileToTags.filePath+"=?", new String[]{filePath}, null, null, null);
             c.moveToFirst();
-            String oldTagList = c.getString(0);
-            if(oldTagList.contains(",")){
-                String updatedTagList = oldTagList.replace(tagId+",", "");
+            c.moveToFirst();
+            String[] oldTagList = c.getString(0).split(",");
+            if(oldTagList.length > 1){
+                String updatedTagList = removeFromTagList(tagId, oldTagList);
                 updatedRow.put(Schema.FileToTags.tags, updatedTagList);
                 db.update(tableFilesToTag, updatedRow, Schema.FileToTags.filePath+"=?", new String[]{filePath});
             } else {
