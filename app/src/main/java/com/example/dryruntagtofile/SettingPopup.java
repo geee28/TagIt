@@ -32,6 +32,7 @@ public class SettingPopup {
     PopupWindow popup;
     View popupRoot;
     View view;
+    MyAdapter.ViewHolder itemView;
     MemoryDB memdb;
     ArrayList<String> fileTags = new ArrayList<>();
     ArrayAdapter<String> availableTagsAdapter;
@@ -156,6 +157,16 @@ public class SettingPopup {
     public void openPopup(String filePath){
         loadData(filePath);
         popup.showAtLocation(view, Gravity.CENTER, 0, 0);
+    }
+
+    public void attachItem(MyAdapter.ViewHolder item){
+        this.itemView = item;
+        popup.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                item.populateData(file.getAbsoluteFile());
+            }
+        });
     }
 
     public void closePopup(){
