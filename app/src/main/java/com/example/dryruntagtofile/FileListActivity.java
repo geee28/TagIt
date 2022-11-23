@@ -34,8 +34,9 @@ public class FileListActivity extends AppCompatActivity {
         }
         noFilesText.setVisibility(View.INVISIBLE);
 
+        MyAdapter fileBrowser = new MyAdapter(getApplicationContext(), filesAndFolders);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new MyAdapter(getApplicationContext(),filesAndFolders));
+        recyclerView.setAdapter(fileBrowser);
 
     }
 }

@@ -7,21 +7,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
 
     Context context;
-    File[] filesAndFolders;
+    ArrayList<File> filesAndFolders = new ArrayList<>();
+    MemoryDB memdb;
 
     public MyAdapter(Context context, File[] filesAndFolders){ //Constructor (set from FileListActivity)
         this.context = context;
-        this.filesAndFolders = filesAndFolders;
+        this.filesAndFolders.addAll(Arrays.asList(filesAndFolders));
+        this.memdb = MemoryDB.getInstance(context);
     }
 
     @Override
@@ -34,8 +39,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(MyAdapter.ViewHolder holder, int position) {
 
-        File selectedFile = filesAndFolders[position];
-        holder.textView.setText(selectedFile.getName());
+        File selectedFile = filesAndFolders.get(position);
+        holder.populateData(selectedFile);
 
         if(selectedFile.isDirectory()){
             holder.imageView.setImageResource(R.drawable.ic_baseline_folder_24);
@@ -69,22 +74,70 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
             }
         });
 
+        holder.itemView.setLongClickable(true);
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                SettingPopup popup = new SettingPopup(context, holder.itemView, memdb);
+                popup.attachItem(holder);
+                popup.openPopup(selectedFile.getAbsolutePath());
+                return true;
+            }
+        });
+
     }
 
     @Override
     public int getItemCount() {
-        return filesAndFolders.length;
+        return filesAndFolders.size();
+    }
+
+    public boolean updateList(File dir){
+        if(dir.isDirectory()){
+            filesAndFolders.clear();
+            filesAndFolders.addAll(Arrays.asList(dir.listFiles()));
+            this.notifyDataSetChanged();
+            return true;
+        }
+        return false;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView textView;
         ImageView imageView;
+        LinearLayout tagContainer;
 
         public ViewHolder(View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.file_name_text_view);
             imageView = itemView.findViewById(R.id.icon_view);
+            tagContainer = itemView.findViewById(R.id.tag_cont);
+        }
+
+        public void populateData(File file){
+            textView.setText(file.getName());
+            if(file.isDirectory()){
+                imageView.setImageResource(R.drawable.ic_baseline_folder_24);
+            }else{
+                imageView.setImageResource(R.drawable.ic_baseline_insert_drive_file_24);
+            }
+
+            try{
+                tagContainer.removeAllViews();
+                String tags[] = memdb.getTagsForFile(file.getAbsolutePath());
+                for(int i = 0; i < tags.length; i++){
+                    TextView tg = new TextView(context);
+                    tg.setText(tags[i]);
+                    tg.setTextSize(14);
+                    tg.setPadding(10, 5, 10, 5);
+                    tg.setTextColor(context.getColor(R.color.white));
+                    tg.setBackgroundColor(context.getColor(R.color.teal_700));
+                    tagContainer.addView(tg);
+                }
+            } catch(Exception e){
+                return;
+            }
         }
     }
 }
