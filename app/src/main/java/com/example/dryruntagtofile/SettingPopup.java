@@ -38,13 +38,17 @@ public class SettingPopup {
     ArrayAdapter<String> availableTagsAdapter;
     private File file;
 
+    // to know if a setting popup is open
+    static boolean open = false;
+
     public SettingPopup(Context context, final View view, MemoryDB memdb){
         this.ctx = context;
         this.view = view;
         this.memdb = memdb;
         LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(LAYOUT_INFLATER_SERVICE);
         popupRoot = inflater.inflate(R.layout.setting_popup, null);
-        popup = new PopupWindow(popupRoot, 800, 1500, true);
+        // popup = new PopupWindow(popupRoot, 800, 1500, true);
+        popup = new PopupWindow(popupRoot, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
         availableTagsAdapter = new ArrayAdapter<String>(context, R.layout.list_item);
     }
 
@@ -156,7 +160,14 @@ public class SettingPopup {
 
     public void openPopup(String filePath){
         loadData(filePath);
+        open = true;
         popup.showAtLocation(view, Gravity.CENTER, 0, 0);
+        popupRoot.findViewById(R.id.close_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closePopup();
+            }
+        });
     }
 
     public void attachItem(MyAdapter.ViewHolder item){
@@ -164,6 +175,7 @@ public class SettingPopup {
         popup.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
+                open = false;
                 item.populateData(file.getAbsoluteFile());
             }
         });

@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,24 +15,27 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Stack;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
 
     Context context;
     ArrayList<File> filesAndFolders = new ArrayList<>();
     MemoryDB memdb;
+    Stack<String> browsePath;
 
-    public MyAdapter(Context context, File[] filesAndFolders){ //Constructor (set from FileListActivity)
+    public MyAdapter(Context context, File[] filesAndFolders, Stack<String> browsePath){ //Constructor (set from FileListActivity)
         this.context = context;
         this.filesAndFolders.addAll(Arrays.asList(filesAndFolders));
         this.memdb = MemoryDB.getInstance(context);
+        this.browsePath = browsePath;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         View view = LayoutInflater.from(context).inflate(R.layout.recycler_item,parent,false);
         return new ViewHolder(view);
     }
@@ -48,22 +52,35 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
             holder.imageView.setImageResource(R.drawable.ic_baseline_insert_drive_file_24);
         }
 
+        // attach long click event
+        // opens a popup to add and remove tags
+        if(selectedFile.isFile()){
+            holder.itemView.setLongClickable(true);
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    SettingPopup popup = new SettingPopup(context, holder.itemView, memdb);
+                    popup.attachItem(holder);
+                    popup.openPopup(selectedFile.getAbsolutePath());
+                    return true;
+                }
+            });
+        }
+
         //if directory - open file list recursively
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(selectedFile.isDirectory()){
-                    Intent intent = new Intent(context, FileListActivity.class);
                     String path = selectedFile.getAbsolutePath();
-                    intent.putExtra("path",path);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
+                    browsePath.push(path);
+                    updateList(selectedFile);
                 }else{
                     //open the file
                     try {
                         Intent intent = new Intent();
                         intent.setAction(android.content.Intent.ACTION_VIEW);
-                        String type = "image/*";
+                        String type = URLConnection.guessContentTypeFromName(selectedFile.getName()); // get the closest guess for file mime type and corresponding apps to open for it
                         intent.setDataAndType(Uri.parse(selectedFile.getAbsolutePath()), type);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
@@ -73,18 +90,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
                 }
             }
         });
-
-        holder.itemView.setLongClickable(true);
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                SettingPopup popup = new SettingPopup(context, holder.itemView, memdb);
-                popup.attachItem(holder);
-                popup.openPopup(selectedFile.getAbsolutePath());
-                return true;
-            }
-        });
-
     }
 
     @Override

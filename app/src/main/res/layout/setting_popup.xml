@@ -1,21 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:id="@+id/popup_root"
-    android:background="#000">
-        <TextView
-            android:id="@+id/file_name"
+    android:background="#75FFFFFF"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#fff"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:paddingHorizontal="15dp"
-            android:paddingVertical="10dp"
-            android:textFontWeight="800"
-            android:text="PopUp"
-            />
+            android:orientation="horizontal"
+            android:gravity="fill"
+            >
+
+
+            <TextView
+                android:id="@+id/file_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:paddingHorizontal="15dp"
+                android:paddingVertical="10dp"
+                android:text="PopUp"
+                android:textFontWeight="800"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/close_btn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_baseline_close_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/meta_info"
@@ -37,40 +71,41 @@
             android:text="Tags"
             android:layout_marginBottom="10dp"
             />
-    <com.google.android.flexbox.FlexboxLayout
-        android:id="@+id/tag_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingHorizontal="10dp"
-        app:flexWrap="wrap"
-        
-        >
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/tag_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="10dp"
+            app:flexWrap="wrap"
 
-    </com.google.android.flexbox.FlexboxLayout>
-    <TextView
-        android:id="@+id/no_tag_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="No Tags"
+            >
 
-        />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:paddingHorizontal="15dp"
-        android:paddingVertical="10dp"
-        android:textFontWeight="800"
-        android:text="Add Tags"
-        />
+        </com.google.android.flexbox.FlexboxLayout>
+        <TextView
+            android:id="@+id/no_tag_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="No Tags"
 
-    <ListView
-        android:id="@+id/avail_tag_list"
-        android:layout_width="match_parent"
-        android:layout_height="500dp"
-        android:scrollbarAlwaysDrawVerticalTrack="true"
-        />
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:paddingHorizontal="15dp"
+            android:paddingVertical="10dp"
+            android:textFontWeight="800"
+            android:text="Add Tags"
+            />
 
+        <ListView
+            android:id="@+id/avail_tag_list"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            />
+
+    </LinearLayout>
 </LinearLayout>
