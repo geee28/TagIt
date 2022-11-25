@@ -5,14 +5,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.Stack;
 
 public class FileListActivity extends AppCompatActivity {
 
+    Stack<String> browsePath = new Stack<>();
+    MyAdapter fileBrowser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +26,9 @@ public class FileListActivity extends AppCompatActivity {
         TextView noFilesText = findViewById(R.id.nofiles_text);
 
         // Get Directory items
-        String filepath = getIntent().getStringExtra("path");
+        // String filepath = getIntent().getStringExtra("path");
+        String filepath = Environment.getExternalStorageDirectory().getPath();
+        browsePath.push(filepath);
         File root = new File(filepath);
         File[] filesAndFolders = root.listFiles();
 
@@ -34,9 +39,19 @@ public class FileListActivity extends AppCompatActivity {
         }
         noFilesText.setVisibility(View.INVISIBLE);
 
-        MyAdapter fileBrowser = new MyAdapter(getApplicationContext(), filesAndFolders);
+        fileBrowser = new MyAdapter(getApplicationContext(), filesAndFolders, browsePath);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(fileBrowser);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(browsePath.isEmpty()) {
+            super.onBackPressed();
+        } else {
+            browsePath.pop();
+            fileBrowser.updateList(new File(browsePath.peek()));
+        }
     }
 }
