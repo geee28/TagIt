@@ -136,6 +136,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
                     tg.setText(tags[i]);
                     tg.setTextSize(14);
                     tg.setPadding(10, 5, 10, 5);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    params.setMargins(10,2,10,0);
+                    tg.setLayoutParams(params);
                     tg.setTextColor(context.getColor(R.color.white));
                     tg.setBackgroundColor(context.getColor(R.color.teal_700));
                     tagContainer.addView(tg);
