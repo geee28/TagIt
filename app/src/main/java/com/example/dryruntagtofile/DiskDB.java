@@ -173,7 +173,7 @@ public class DiskDB extends SQLiteOpenHelper {
         if(limit != null && limit != 0){
             l = limit.toString();
             if(offset != null && offset != 0){
-                l = l+","+offset;
+                l = offset+","+l;
             }
         }
         Cursor c = db.query(tableTagToFiles, new String[]{Schema.TagToFiles.fileList}, Schema.TagToFiles.tag_uid+"="+tagId, null, null, null, null, l);

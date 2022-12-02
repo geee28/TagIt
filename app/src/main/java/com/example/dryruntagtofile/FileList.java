@@ -2,8 +2,10 @@ package com.example.dryruntagtofile;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.function.UnaryOperator;
 
 class FileItem {
     public String absolutePath = null;
@@ -35,40 +37,38 @@ class FileItem {
 
 public class FileList {
 
-    private FileItem[] fileArray = null;
+    private ArrayList<FileItem> fileArray = new ArrayList<>();
 
     public FileList(String[] fileList){
-        fileArray = new FileItem[fileList.length];
         for(int i = 0; i < fileList.length; i++){
-            fileArray[i] = new FileItem(fileList[i]);
+            fileArray.add(new FileItem(fileList[i]));
         }
     }
 
     public FileList(FileItem[] fileList){
-        fileArray = new FileItem[fileList.length];
         for(int i = 0; i < fileList.length; i++){
-            fileArray[i] = fileList[i];
+            fileArray.add(fileList[i]);
         }
     }
 
     public int count(){
-        return fileArray.length;
+        return fileArray.size();
     }
 
     public FileItem[] getFileArray() {
-        return fileArray;
+        return fileArray.toArray(new FileItem[0]);
     }
 
     public FileItem[] getFileArray(int limit, int offset) {
         FileItem[] files = new FileItem[limit];
-        for(int i = offset; i < offset+limit || i < fileArray.length; i++){
-            files[i] = fileArray[i];
+        for(int i = offset; i < offset+limit || i < fileArray.size(); i++){
+            files[i] = fileArray.get(i);
         }
         return files;
     }
 
     public FileList sortList(String by){
-        Arrays.sort(fileArray, new Comparator<FileItem>() {
+        fileArray.sort(new Comparator<FileItem>() {
             @Override
             public int compare(FileItem f1, FileItem f2) {
                 switch(by){
