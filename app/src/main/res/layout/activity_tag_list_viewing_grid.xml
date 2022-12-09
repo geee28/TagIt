@@ -10,21 +10,21 @@
     <LinearLayout
         android:id="@+id/llSearchBar"
         android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_height="60dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
         <androidx.appcompat.widget.Toolbar
+            android:id="@+id/tbtoolbar"
             android:layout_width="match_parent"
-            android:layout_height="80dp">
+            android:layout_height="60dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:textColor="#ffffff"
-                android:text="Search Tags"
-                android:layout_gravity="center_horizontal" />
-
+                android:text="Search"
+                android:layout_gravity="center_horizontal"/>
         </androidx.appcompat.widget.Toolbar>
     </LinearLayout>
     <LinearLayout
