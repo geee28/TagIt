@@ -39,7 +39,7 @@ public class TagListViewingGrid extends AppCompatActivity {
     ImageView btnFilterClose;
     MaterialButton btnAndFilter, btnOrFilter, btnNotFilter;
     private ChipGroup andChipGroup, orChipGroup, notChipGroup;
-
+// this is a comment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
