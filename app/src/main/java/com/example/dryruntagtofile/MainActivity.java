@@ -7,6 +7,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.material.button.MaterialButton;
@@ -15,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 
@@ -22,7 +25,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.widget.Toast;
 
+import java.io.File;
+import java.net.URI;
+import java.nio.file.Paths;
 import java.security.Permission;
+import java.util.Arrays;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,20 +44,25 @@ public class MainActivity extends AppCompatActivity {
         MaterialButton tagsBtn = findViewById(R.id.tagsButton);
 
         // Toast.makeText(this, String.valueOf(checkCallingOrSelfPermission(Manifest.permission.POST_NOFITICATIONS)), Toast.LENGTH_LONG).show();
-        try {
+        /*try {
             startForegroundService(new Intent(getApplicationContext(), FileSystemService.class));
         } catch (Exception e){
             Log.e("Initialising Error", e.toString());
-        }
+        }*/
 
-        Activity self = this;
+        /*File[] l = new File(u.getPath()).listFiles();
+        for (int i = 0; i < l.length ; i++) {
+            Log.d("volume_name", l[i].getAbsolutePath());
+        }*/
+
+        Context self = this;
         //Click on FILES button
         filesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(checkPermission()){
                     Intent intent = new Intent(MainActivity.this, FileListActivity.class);
-                    String path = Environment.getExternalStorageDirectory().getPath();
+                    String path = FileUtilities.getFileRoot(self).getPath();
                     intent.putExtra("path",path);
                     startActivity(intent);
                 }else{ //permission denied

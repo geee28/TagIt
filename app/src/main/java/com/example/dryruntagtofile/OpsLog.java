@@ -3,6 +3,7 @@ package com.example.dryruntagtofile;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -42,17 +43,20 @@ public class OpsLog {
     SQLiteDatabase db = null;
     Context ctx = null;
     DiskDB diskDB = null;
+    MemoryDB memDB = null;
 
-    public OpsLog(Context ctx){
+    public OpsLog(Context ctx, MemoryDB memDB){
         this.ctx = ctx;
         this.diskDB = new DiskDB(ctx);
         this.db = this.diskDB.getWritableDatabase();
+        this.memDB = memDB;
         OpsLog self = this;
 
         ScheduledExecutorService operationScheduler = Executors.newSingleThreadScheduledExecutor();
         operationScheduler.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
+
                 Cursor c = self.db.query(Schema.tableOps, new String[]{Schema.OpsLog.op, Schema.OpsLog.data, "id"}, null, null, null, null, null, "1");
                 if(c.getCount() == 0){
                     return;
@@ -61,6 +65,7 @@ public class OpsLog {
                 try {
                     JSONObject data = null;
                     data = new JSONObject(c.getString(1));
+                    Log.d("schedule_data", data.toString());
                     String taskCompletedMsg = "";
                     boolean completed = false;
                     switch(c.getInt(0)){
@@ -68,37 +73,46 @@ public class OpsLog {
                             int tagId = data.getInt("tag_id");
                             String filePath = data.getString("old_path");
                             completed = self.detachTag(tagId, filePath);
+                            memDB.removeTagFromFile(filePath, memDB.getTagNameById(tagId));
                             break;
                         }
                         case TAG_DELETED:{
                             int tagId = data.getInt("tag_id");
                             completed = self.deleteTagData(tagId);
                             taskCompletedMsg = "Data for the tag cleared";
+                            memDB.refreshMemoryState();
                             break;
                         }
                         case FILE_RENAMED:{
                             String old_path = data.getString("old_path");
                             String new_path = data.getString("new_path");
                             completed = self.fileMoved(old_path, new_path, true);
+                            memDB.replaceFilePathAFOL(old_path, new_path);
                             break;
                         }
                         case FILE_MOVED:{
                             String old_path = data.getString("old_path");
                             String new_path = data.getString("new_path");
                             completed = self.fileMoved(old_path, new_path, false);
+                            memDB.replaceFilePathAFOL(old_path, new_path);
                             break;
                         }
                         case FILE_DELETED: {
                             String old_path = data.getString("old_path");
                             completed = self.fileDeleted(old_path);
+                            memDB.deleteFilePathAFOL(old_path);
                             break;
                         }
                     }
                     // if successfully not completed do not delete
-                    if(!completed) return;
+                    /*if(!completed) return;*/
                     // proceed if task is successfully completed
                     self.db.delete(Schema.tableOps, "id="+c.getString(2), null);
                     c.close();
+
+                    Intent intent = new Intent("event_received");
+                    ctx.sendBroadcast(intent);
+
                     if(taskCompletedMsg.length() == 0) return;
                     ((Activity)self.ctx).runOnUiThread(new Runnable() {
                         @Override
@@ -113,7 +127,7 @@ public class OpsLog {
                     return;
                 }
             }
-        },0, 2, TimeUnit.SECONDS);
+        },0, 200, TimeUnit.MILLISECONDS);
     }
 
     public Result enqueue(int op, Integer tagId, String old_path, String new_path) {

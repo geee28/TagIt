@@ -93,7 +93,7 @@ public class FileMovementLog {
     private static OpsLog dbLog;
 
     private FileMovementLog(Context ctx){
-        dbLog = new OpsLog(ctx);
+        dbLog = new OpsLog(ctx, MemoryDB.getInstance(ctx));
     }
 
     public static FileMovementLog getInstance(Context ctx){

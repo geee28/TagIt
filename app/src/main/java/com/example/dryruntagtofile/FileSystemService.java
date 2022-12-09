@@ -47,7 +47,7 @@ public class FileSystemService extends Service {
                 try {
                     ws = FileSystems.getDefault().newWatchService();
                     // check for permission
-                    File root = Environment.getExternalStorageDirectory();
+                    File root = FileUtilities.getFileRoot(ctx);
                     Queue<File> children = new LinkedList<>();
                     children.add(root);
                     while(!children.isEmpty()){
