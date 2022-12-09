@@ -18,7 +18,7 @@ public class MemoryDB {
     DiskDB diskDB = null;
     OpsLog ops = null;
 
-    private MemoryDB(Context ctx){
+    MemoryDB(Context ctx){
         diskDB = new DiskDB(ctx);
         ops = new OpsLog(ctx);
         refreshMemoryState();
@@ -129,4 +129,11 @@ public class MemoryDB {
         taggedFiles.put(filePath, tagSet);
         return fileTags.toArray(new String[0]);
     }
+
+//    public String getTagName(Integer tagUID) {
+//        return tagIds.get(tagUID);
+//    }
+//    public Integer getTagUID(String tagName) {
+//        return tags.get(tagName);
+//    }
 }

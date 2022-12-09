@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(checkPermission()){
-                    Intent intent = new Intent(MainActivity.this, TagsListActivity.class);
+                    Intent intent = new Intent(MainActivity.this, TagsMainActivity.class);
                     startActivity(intent);
                 }else{ //permission denied
                     requestPermission();
