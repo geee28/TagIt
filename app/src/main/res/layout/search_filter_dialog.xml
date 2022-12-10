@@ -18,13 +18,27 @@
 
     <!-- Search Filter Text -->
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/search_filter_heading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:text="SEARCH FILTER"
         android:textAlignment="center"
+        android:textColor="#000000"
         android:textSize="18sp"
-        android:layout_margin="10dp"/>
+        android:textStyle="bold"/>
+
+    <!-- Search Filter Text -->
+    <TextView
+        android:id="@+id/search_filter_para"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="10dp"
+        android:text="( Select Search Operation )"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="12sp"/>
 
     <!--    AND Filter Card -->
     <androidx.cardview.widget.CardView
@@ -45,20 +59,19 @@
                 android:id="@+id/btn_and_filter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toStartOf="@+id/and_filter_expand_arrow"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:text="CONTAINS EACH"
                 android:textAlignment="viewStart" />
 
-            <ImageView
-                android:id="@+id/and_filter_expand_arrow"
-                android:contentDescription="Expand AND Filter Dialog"
-                android:layout_width="40dp"
-                android:layout_height="49dp"
-                android:layout_alignParentEnd="true"
+<!--            <ImageView-->
+<!--                android:id="@+id/and_filter_expand_arrow"-->
+<!--                android:contentDescription="Expand AND Filter Dialog"-->
+<!--                android:layout_width="40dp"-->
+<!--                android:layout_height="49dp"-->
+<!--                android:layout_alignParentEnd="true"-->
 
-                app:srcCompat="@drawable/ic_baseline_expand_more_24" />
+<!--                app:srcCompat="@drawable/ic_baseline_expand_more_24" />-->
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/and_filter_chipGroup"
@@ -67,42 +80,43 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/btn_and_filter"
                 android:background="#CCAEFB"
-                android:paddingHorizontal="10dp">
+                android:paddingHorizontal="10dp"
+                app:singleLine="true">
 
                 <com.google.android.material.chip.Chip
                     style="@style/Widget.MaterialComponents.Chip.Entry"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="chip1"
-                    android:textSize="13sp"></com.google.android.material.chip.Chip>
+                    android:textSize="13sp"/>
 
                 <com.google.android.material.chip.Chip
                     style="@style/Widget.MaterialComponents.Chip.Entry"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="chip2"
-                    android:textSize="13sp"></com.google.android.material.chip.Chip>
+                    android:textSize="13sp"/>
 
                 <com.google.android.material.chip.Chip
                     style="@style/Widget.MaterialComponents.Chip.Entry"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="chip3"
-                    android:textSize="13sp"></com.google.android.material.chip.Chip>
+                    android:textSize="13sp"/>
 
                 <com.google.android.material.chip.Chip
                     style="@style/Widget.MaterialComponents.Chip.Entry"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="chip4"
-                    android:textSize="13sp"></com.google.android.material.chip.Chip>
+                    android:textSize="13sp"/>
 
                 <com.google.android.material.chip.Chip
                     style="@style/Widget.MaterialComponents.Chip.Entry"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="chip5"
-                    android:textSize="13sp"></com.google.android.material.chip.Chip>
+                    android:textSize="13sp"/>
 
             </com.google.android.material.chip.ChipGroup>
         </RelativeLayout>
@@ -133,20 +147,19 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="0dp"
                 android:layout_marginBottom="0dp"
-                android:layout_toStartOf="@+id/or_filter_expand_arrow"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:text="CONTAINS"
                 android:textAlignment="viewStart"/>
 
-            <ImageView
-                android:id="@+id/or_filter_expand_arrow"
-                android:contentDescription="Expand OR Filter Dialog"
-                android:layout_width="40dp"
-                android:layout_height="49dp"
-                android:layout_alignParentEnd="true"
+<!--            <ImageView-->
+<!--                android:id="@+id/or_filter_expand_arrow"-->
+<!--                android:contentDescription="Expand OR Filter Dialog"-->
+<!--                android:layout_width="40dp"-->
+<!--                android:layout_height="49dp"-->
+<!--                android:layout_alignParentEnd="true"-->
 
-                app:srcCompat="@drawable/ic_baseline_expand_more_24" />
+<!--                app:srcCompat="@drawable/ic_baseline_expand_more_24" />-->
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/or_filter_chipGroup"
@@ -163,14 +176,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="chip6"
-                    android:textSize="13sp"></com.google.android.material.chip.Chip>
+                    android:textSize="13sp"/>
 
                 <com.google.android.material.chip.Chip
                     style="@style/Widget.MaterialComponents.Chip.Entry"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="chip7"
-                    android:textSize="13sp"></com.google.android.material.chip.Chip>
+                    android:textSize="13sp"/>
 
 
             </com.google.android.material.chip.ChipGroup>
@@ -201,20 +214,19 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="0dp"
                 android:layout_marginBottom="0dp"
-                android:layout_toStartOf="@+id/not_filter_expand_arrow"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:text="DOES NOT CONTAINS"
                 android:textAlignment="viewStart"/>
 
-            <ImageView
-                android:id="@+id/not_filter_expand_arrow"
-                android:contentDescription="Expand NOT Filter Dialog"
-                android:layout_width="40dp"
-                android:layout_height="49dp"
-                android:layout_alignParentEnd="true"
+<!--            <ImageView-->
+<!--                android:id="@+id/not_filter_expand_arrow"-->
+<!--                android:contentDescription="Expand NOT Filter Dialog"-->
+<!--                android:layout_width="40dp"-->
+<!--                android:layout_height="49dp"-->
+<!--                android:layout_alignParentEnd="true"-->
 
-                app:srcCompat="@drawable/ic_baseline_expand_more_24" />
+<!--                app:srcCompat="@drawable/ic_baseline_expand_more_24" />-->
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/not_filter_chipGroup"
@@ -231,21 +243,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="chip8"
-                    android:textSize="13sp"></com.google.android.material.chip.Chip>
+                    android:textSize="13sp"/>
 
                 <com.google.android.material.chip.Chip
                     style="@style/Widget.MaterialComponents.Chip.Entry"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="chip9"
-                    android:textSize="13sp"></com.google.android.material.chip.Chip>
+                    android:textSize="13sp"/>
 
                 <com.google.android.material.chip.Chip
                     style="@style/Widget.MaterialComponents.Chip.Entry"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="chip10"
-                    android:textSize="13sp"></com.google.android.material.chip.Chip>
+                    android:textSize="13sp"/>
 
 
             </com.google.android.material.chip.ChipGroup>

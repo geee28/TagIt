@@ -48,9 +48,11 @@ public class TagListViewingGrid extends AppCompatActivity {
         toolbar = findViewById(R.id.tbtoolbar);
         this.setSupportActionBar(toolbar);
         this.getSupportActionBar().setTitle("");
+
         searchOperation = 1;
         btnSearchFilter = findViewById(R.id.btn_search_filter);
         btnSearchFilter.setOnClickListener(view -> showDialog());
+
         tags = new ArrayList<>();
         tags.add("Tag1");
         tags.add("Tag2");
