@@ -147,7 +147,6 @@ public class SettingPopup {
                     fileTags.add(tagName);
                     tagContainer.setVisibility(View.VISIBLE);
                     popupRoot.findViewById(R.id.no_tag_text).setVisibility(View.GONE);
-                    adapterView.removeView(view);
                 } catch (Exception e) {
                     Log.e("error", e.toString());
                 } finally {
