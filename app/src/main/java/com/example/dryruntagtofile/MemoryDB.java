@@ -20,19 +20,23 @@ public class MemoryDB {
 
     private MemoryDB(Context ctx){
         diskDB = new DiskDB(ctx);
-        ops = new OpsLog(ctx);
+        ops = new OpsLog(ctx, this);
         refreshMemoryState();
     }
 
-    public void refreshMemoryState(){
+    public void refreshTagList(){
         tags = diskDB.getTags();
-        taggedFiles = diskDB.getTaggedFiles();
         // mapping tagid -> tag
         tagIds = new HashMap<>(tags.size());
         String[] keys = tags.keySet().toArray(new String[0]);
         for (String key : keys) {
             tagIds.put(tags.get(key), key);
         }
+    }
+
+    public void refreshMemoryState(){
+        taggedFiles = diskDB.getTaggedFiles();
+        refreshTagList();
     }
 
     @Synchronized
@@ -43,6 +47,10 @@ public class MemoryDB {
             }
             return instance;
         }
+    }
+
+    public String getTagNameById(int tagId){
+        return tagIds.getOrDefault(tagId, "");
     }
 
     public ArrayList<String> getTags(){
@@ -128,5 +136,15 @@ public class MemoryDB {
         }
         taggedFiles.put(filePath, tagSet);
         return fileTags.toArray(new String[0]);
+    }
+
+    public void replaceFilePathAFOL(String oldFilePath, String newFilePath){
+        LinkedHashSet<Integer> tagSet = taggedFiles.get(oldFilePath);
+        taggedFiles.remove(oldFilePath);
+        taggedFiles.put(newFilePath, tagSet);
+    }
+
+    public void deleteFilePathAFOL(String filePath){
+        taggedFiles.remove(filePath);
     }
 }
