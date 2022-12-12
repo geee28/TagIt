@@ -43,16 +43,10 @@ public class MainActivity extends AppCompatActivity {
         MaterialButton filesBtn = findViewById(R.id.filesButton);
         MaterialButton tagsBtn = findViewById(R.id.tagsButton);
 
-        // Toast.makeText(this, String.valueOf(checkCallingOrSelfPermission(Manifest.permission.POST_NOFITICATIONS)), Toast.LENGTH_LONG).show();
         /*try {
             startForegroundService(new Intent(getApplicationContext(), FileSystemService.class));
         } catch (Exception e){
             Log.e("Initialising Error", e.toString());
-        }*/
-
-        /*File[] l = new File(u.getPath()).listFiles();
-        for (int i = 0; i < l.length ; i++) {
-            Log.d("volume_name", l[i].getAbsolutePath());
         }*/
 
         Context self = this;
@@ -76,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(checkPermission()){
-                    Intent intent = new Intent(MainActivity.this, TagsListActivity.class);
+                    Intent intent = new Intent(MainActivity.this, TagListViewingGrid.class);
                     startActivity(intent);
                 }else{ //permission denied
                     requestPermission();
@@ -97,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
 
         this.startActivity(intent);
-        // ActivityCompat.requestPermissions(MainActivity.this, new String[] {Manifest.permission.MANAGE_EXTERNAL_STORAGE}, 1000);
     }
 
     @Override
