@@ -19,6 +19,9 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 public class TagListViewingGrid extends AppCompatActivity {
@@ -39,7 +42,11 @@ public class TagListViewingGrid extends AppCompatActivity {
     ImageView btnFilterClose;
     MaterialButton btnAndFilter, btnOrFilter, btnNotFilter;
     private ChipGroup andChipGroup, orChipGroup, notChipGroup;
-// this is a comment
+    ChipGroup chipGroup = null;
+    HashSet<String> andTags = new HashSet<>();
+    HashSet<String> orTags = new HashSet<>();
+    HashSet<String> notTags = new HashSet<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,50 +113,112 @@ public class TagListViewingGrid extends AppCompatActivity {
         filterDialog.setContentView(R.layout.search_filter_dialog);
         filterDialog.setCancelable(true);
         filterDialog.setCanceledOnTouchOutside(true);
+
         btnFilterClose = filterDialog.findViewById(R.id.btn_filter_close);
         btnAndFilter = filterDialog.findViewById(R.id.btn_and_filter);
         btnOrFilter = filterDialog.findViewById(R.id.btn_or_filter);
         btnNotFilter = filterDialog.findViewById(R.id.btn_not_filter);
+
         andChipGroup = filterDialog.findViewById(R.id.and_filter_chipGroup);
         orChipGroup = filterDialog.findViewById(R.id.or_filter_chipGroup);
         notChipGroup = filterDialog.findViewById(R.id.not_filter_chipGroup);
+
         btnFilterClose.setOnClickListener(view -> filterDialog.dismiss());
-        btnAndFilter.setOnClickListener(view -> searchOperation = 1);
-        btnOrFilter.setOnClickListener(view -> searchOperation = 2);
-        btnNotFilter.setOnClickListener(view -> searchOperation = 3);
+//        btnAndFilter.setOnClickListener(view -> searchOperation = 1);
+//        btnOrFilter.setOnClickListener(view -> searchOperation = 2);
+//        btnNotFilter.setOnClickListener(view -> searchOperation = 3);
+
+
+        btnAndFilter.setOnClickListener(view -> {
+            searchOperation = 1;
+            filterDialog.dismiss();
+        });
+
+        btnOrFilter.setOnClickListener(view -> {
+            searchOperation = 2;
+            filterDialog.dismiss();
+        });
+
+        btnNotFilter.setOnClickListener(view -> {
+            searchOperation = 3;
+            filterDialog.dismiss();
+        });
+
+        andTags.add("Tag1");
+        andTags.add("Tag2");
+        andTags.add("Tag3");
+        andTags.add("Tag4");
+        andTags.add("Tag5");
+        orTags.add("Tag6");
+        orTags.add("Tag7");
+        orTags.add("Tag8");
+        notTags.add("Tag9");
+
+        switch(searchOperation) {
+            case 1:
+                chipGroup = andChipGroup;
+                break;
+            case 2:
+                chipGroup = orChipGroup;
+                break;
+            case 3:
+                chipGroup = notChipGroup;
+                break;
+            default:
+                searchOperation = 1;
+                chipGroup = andChipGroup;
+                break;
+        }
+
+        fillChipGroup(andTags, andChipGroup);
+        fillChipGroup(orTags, orChipGroup);
+        fillChipGroup(notTags, notChipGroup);
+
         filterDialog.show();
     }
 
-    private void onSelectTag(String tagName, ChipGroup chipGroup) {
+    private void fillChipGroup(HashSet<String> chipGroupTags, ChipGroup chipGroup) {
+        for (String tag: chipGroupTags) {
+            insertTag(tag, chipGroupTags, chipGroup);
+        }
+    }
+
+    private void insertTag(String tagName, HashSet<String> chipGroupTags, ChipGroup chipGroup) {
         Chip chip = new Chip(this);
         chip.setText(tagName);
         chip.setCloseIconVisible(true);
         chip.setCheckable(false);
         chip.setClickable(false);
-        // chip.setOnCloseIconClickListener(this);
         chip.setOnCloseIconClickListener(view -> {
             Chip chip1 = (Chip) view;
             chipGroup.removeView(chip1);
+            chipGroupTags.remove(tagName);
         });
         chipGroup.addView(chip);
         chipGroup.setVisibility(View.VISIBLE);
     }
 
+//    private HashSet<String> union(ArrayList<Integer> tags) {
+//        HashSet<String> unionSet = new HashSet<String>();
+//        for(Integer tagUID : tags) {
+//            //getFilesForATag()
+//            String filesString = getFilesForATag(tagUID);
+//            ArrayList<String> files = (ArrayList<String>) Arrays.asList(filesString.split(";"));
+//            for (String filePath : files){
+//                unionSet.add(filePath);
+//            }
+//        }
+//        return unionSet;
+//    }
 
-    /*
-    private HashSet<String> union(ArrayList<Integer> tags) {
-        HashSet<String> unionSet = new HashSet<String>();
-        for(Integer tagUID : tags) {
-            //getFilesForATag()
-            String filesString = getFilesForATag(tagUID);
-            ArrayList<String> files = (ArrayList<String>) Arrays.asList(filesString.split(";"));
-            for (String filePath : files){
-                unionSet.add(filePath);
-            }
-        }
-        return unionSet;
-    }
-
-    private HashSet<String> intersection(ArrayList<Integer> tags) {}
-    */
+//    private HashSet<Integer> intersection(HashSet<Integer> tags) {
+//        HashSet<Integer> result = new HashSet<>();
+//
+//        Iterator<Integer> itr = tags.iterator();
+//        Integer tag1 = itr.next();
+//        while (itr.hasNext()) {
+//            //itr.next();
+//        }
+//        return result;
+//    }
 }

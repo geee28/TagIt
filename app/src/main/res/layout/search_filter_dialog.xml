@@ -83,40 +83,36 @@
                 android:paddingHorizontal="10dp"
                 app:singleLine="true">
 
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Entry"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="chip1"
-                    android:textSize="13sp"/>
-
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Entry"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="chip2"
-                    android:textSize="13sp"/>
-
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Entry"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="chip3"
-                    android:textSize="13sp"/>
-
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Entry"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="chip4"
-                    android:textSize="13sp"/>
-
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Entry"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="chip5"
-                    android:textSize="13sp"/>
+<!--                <com.google.android.material.chip.Chip-->
+<!--                    style="@style/Widget.MaterialComponents.Chip.Entry"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="chip1"-->
+<!--                    android:textSize="13sp"/>-->
+<!--                <com.google.android.material.chip.Chip-->
+<!--                    style="@style/Widget.MaterialComponents.Chip.Entry"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="chip2"-->
+<!--                    android:textSize="13sp"/>-->
+<!--                <com.google.android.material.chip.Chip-->
+<!--                    style="@style/Widget.MaterialComponents.Chip.Entry"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="chip3"-->
+<!--                    android:textSize="13sp"/>-->
+<!--                <com.google.android.material.chip.Chip-->
+<!--                    style="@style/Widget.MaterialComponents.Chip.Entry"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="chip4"-->
+<!--                    android:textSize="13sp"/>-->
+<!--                <com.google.android.material.chip.Chip-->
+<!--                    style="@style/Widget.MaterialComponents.Chip.Entry"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="chip5"-->
+<!--                    android:textSize="13sp"/>-->
 
             </com.google.android.material.chip.ChipGroup>
         </RelativeLayout>
@@ -171,20 +167,18 @@
                 android:paddingHorizontal="10dp"
                 app:singleLine="true">
 
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Entry"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="chip6"
-                    android:textSize="13sp"/>
-
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Entry"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="chip7"
-                    android:textSize="13sp"/>
-
+<!--                <com.google.android.material.chip.Chip-->
+<!--                    style="@style/Widget.MaterialComponents.Chip.Entry"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="chip6"-->
+<!--                    android:textSize="13sp"/>-->
+<!--                <com.google.android.material.chip.Chip-->
+<!--                    style="@style/Widget.MaterialComponents.Chip.Entry"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="chip7"-->
+<!--                    android:textSize="13sp"/>-->
 
             </com.google.android.material.chip.ChipGroup>
         </RelativeLayout>
@@ -238,27 +232,24 @@
                 android:paddingHorizontal="10dp"
                 app:singleLine="true">
 
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Entry"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="chip8"
-                    android:textSize="13sp"/>
-
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Entry"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="chip9"
-                    android:textSize="13sp"/>
-
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Entry"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="chip10"
-                    android:textSize="13sp"/>
-
+<!--                <com.google.android.material.chip.Chip-->
+<!--                    style="@style/Widget.MaterialComponents.Chip.Entry"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="chip8"-->
+<!--                    android:textSize="13sp"/>-->
+<!--                <com.google.android.material.chip.Chip-->
+<!--                    style="@style/Widget.MaterialComponents.Chip.Entry"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="chip9"-->
+<!--                    android:textSize="13sp"/>-->
+<!--                <com.google.android.material.chip.Chip-->
+<!--                    style="@style/Widget.MaterialComponents.Chip.Entry"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="chip10"-->
+<!--                    android:textSize="13sp"/>-->
 
             </com.google.android.material.chip.ChipGroup>
         </RelativeLayout>
