@@ -77,21 +77,22 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
             holder.imageView.setImageResource(R.drawable.ic_baseline_folder_24);
         }else{
             holder.imageView.setImageResource(R.drawable.ic_baseline_insert_drive_file_24);
+            // attach long click event
+            // opens a popup to add and remove tags
+            // restricting context menu to file items only
+            holder.itemView.setLongClickable(true);
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    holder.itemView.setActivated(true);
+                    // open basic file util popup
+                    Log.d("test_f", selectedFile.getAbsolutePath());
+                    fileContextMenu.openMenu(selectedFile);
+                    return true;
+                }
+            });
         }
 
-        // attach long click event
-        // opens a popup to add and remove tags
-        holder.itemView.setLongClickable(true);
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                holder.itemView.setActivated(true);
-                // open basic file util popup
-                Log.d("test_f", selectedFile.getAbsolutePath());
-                fileContextMenu.openMenu(selectedFile);
-                return true;
-            }
-        });
 
         //if directory - open file list recursively
         holder.itemView.setOnClickListener(new View.OnClickListener() {
