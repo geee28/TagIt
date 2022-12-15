@@ -93,6 +93,33 @@
             android:text="Add Tags"
             />
 
+        <LinearLayout
+            android:id="@+id/popup_base"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            >
+
+            <EditText
+                android:id="@+id/tag_name_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:hint="New Tag Name"
+            />
+
+        </LinearLayout>
+
+        <Button
+            android:textColor="@color/white"
+            android:id="@+id/add_tag_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Tag"
+            android:background="@color/design_default_color_primary"
+            android:layout_marginHorizontal="50dp"
+            />
+
         <ListView
             android:id="@+id/avail_tag_list"
             android:layout_width="match_parent"
@@ -101,4 +128,5 @@
             />
 
     </LinearLayout>
+
 </LinearLayout>

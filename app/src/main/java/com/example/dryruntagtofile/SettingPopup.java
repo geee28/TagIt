@@ -1,19 +1,28 @@
 package com.example.dryruntagtofile;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+import static android.content.Context.WINDOW_SERVICE;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.PixelFormat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.flexbox.FlexboxLayout;
 
@@ -37,6 +46,7 @@ public class SettingPopup {
     ArrayList<String> fileTags = new ArrayList<>();
     ArrayAdapter<String> availableTagsAdapter;
     private File file;
+    boolean tagAddFlag = false; // f -> open text input , t -> save tag
 
     // to know if a setting popup is open
     static boolean open = false;
@@ -49,7 +59,7 @@ public class SettingPopup {
         popupRoot = inflater.inflate(R.layout.setting_popup, null);
         // popup = new PopupWindow(popupRoot, 800, 1500, true);
         popup = new PopupWindow(popupRoot, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
-        availableTagsAdapter = new ArrayAdapter<String>(context, R.layout.list_item);
+        availableTagsAdapter = new ArrayAdapter<String>(context, R.layout.list_item, R.id.availTagTextView);
     }
 
     private TextView getTextView(int res){
@@ -155,6 +165,40 @@ public class SettingPopup {
             }
         });
         availableTagsList.setAdapter(availableTagsAdapter);
+
+        // add tags functionality
+        EditText tagNameInput = (EditText) popupRoot.findViewById(R.id.tag_name_input);
+        popupRoot.findViewById(R.id.add_tag_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(tagAddFlag){
+                    popupRoot.findViewById(R.id.popup_base).setVisibility(View.GONE);
+                    ((Button) view).setText("add tag");
+                    String tagName = tagNameInput.getText().toString();
+                    try{
+                        memdb.addTag(tagName);
+                        memdb.addTagToFile(file.getAbsolutePath(), tagName);
+                        updateTagLists();
+                    } catch (Exception e){
+                        /*new AlertDialog.Builder(ctx).setMessage(e.getMessage()).setTitle("Error").setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterfaceErrorMsg, int i) {
+                                dialogInterfaceErrorMsg.dismiss();
+                            }
+                        }).show();*/
+                        Toast.makeText(ctx, e.getMessage(), Toast.LENGTH_LONG).show();
+                        return;
+                    } finally {
+                        tagNameInput.setText("");
+                    }
+                } else {
+                    popupRoot.findViewById(R.id.popup_base).setVisibility(View.VISIBLE);
+                    ((Button) view).setText("add");
+                    popupRoot.findViewById(R.id.tag_name_input).findFocus();
+                }
+                tagAddFlag = !tagAddFlag;
+            }
+        });
     }
 
     public void openPopup(String filePath){
