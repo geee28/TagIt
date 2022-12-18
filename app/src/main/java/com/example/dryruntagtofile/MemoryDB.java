@@ -62,6 +62,19 @@ public class MemoryDB {
         return new HashSet<>(tags.keySet());
     }
 
+    public HashSet<Integer> getUIDSet(HashSet<String> tagNames){
+        HashSet<Integer> UIDSet = new HashSet<>();
+        int id;
+        for(String tagname: tagNames){
+            try{
+                id = tags.get(tagname);
+                UIDSet.add(id);
+            }
+            catch(NullPointerException e) { continue; }
+        }
+        return UIDSet;
+    }
+
     public void addTag(String tagName){
         int id = diskDB.addTag(tagName);
 

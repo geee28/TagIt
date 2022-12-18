@@ -188,14 +188,14 @@ public class DiskDB extends SQLiteOpenHelper {
         return new FileList(files);
     }
 
-//    public String[] listFilePathsFor(int tagId){
-//        Cursor c = db.query(tableTagToFiles, new String[]{Schema.TagToFiles.fileList}, Schema.TagToFiles.tag_uid+"="+tagId, null, null, null, null, l);
-//        c.moveToFirst();
-//        // use FileList class to put to array
-//        String filePaths[] = c.getString(0).split(delimeter);
-//        c.close();
-//        return filePaths;
-//    }
+    public String[] listFilePathsFor(int tagId){
+        Cursor c = db.query(tableTagToFiles, new String[]{Schema.TagToFiles.fileList}, Schema.TagToFiles.tag_uid+"="+tagId, null, null, null, null);
+        c.moveToFirst();
+        // use FileList class to put to array
+        String filePaths[] = c.getString(0).split(delimeter);
+        c.close();
+        return filePaths;
+    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {

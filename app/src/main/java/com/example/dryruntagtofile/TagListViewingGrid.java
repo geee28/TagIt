@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,7 +21,10 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -47,6 +51,7 @@ public class TagListViewingGrid extends AppCompatActivity {
     private ChipGroup andChipGroup, orChipGroup, notChipGroup;
     ChipGroup chipGroup = null;
     HashSet<String> tags = new HashSet<>();
+    HashSet<Integer> tagUIDs = new HashSet<>();
     HashSet<String> andTags = new HashSet<>();
     HashSet<String> orTags = new HashSet<>();
     HashSet<String> notTags = new HashSet<>();
@@ -76,8 +81,12 @@ public class TagListViewingGrid extends AppCompatActivity {
         tags.add("Tag8");
         tags.add("Tag9");
         tags.add("Tag10");
-
         image = R.drawable.ic_baseline_edit_24;
+        tagUIDs = memoryDB.getUIDSet(tags);
+//        for (Integer uid :tagUIDs) {
+//            Log.d("UID", String.valueOf(uid));
+//            System.out.println("UID"+uid);
+//        }
         gridadapter = new GridAdapter(this, new ArrayList<>(tags), image);
 
         LinearLayoutManager llm = new LinearLayoutManager(this);
@@ -197,7 +206,6 @@ public class TagListViewingGrid extends AppCompatActivity {
         chipGroup.setVisibility(View.VISIBLE);
     }
 
-//    private HashSet<Integer> getUIDsSet(HashSet<String> tagNames) {}
 
 //    private HashSet<String> union(HashSet<Integer> tagsUID) {
 //        HashSet<String> unionSet = new HashSet<String>();
@@ -221,4 +229,21 @@ public class TagListViewingGrid extends AppCompatActivity {
 //        }
 //        return result;
 //    }
+
+    private HashSet<String> NOT(HashSet<String> filePaths, HashSet<Integer> notTags) {
+        diskDB = new DiskDB(this);
+        HashSet<String> notFilePaths = new HashSet<>();
+        ArrayList<String> filePathsForNotUID = new ArrayList<>();
+        for (Integer uid: notTags) {
+            Boolean b = Collections.addAll(filePathsForNotUID, diskDB.listFilePathsFor(uid));
+        }
+        notFilePaths.addAll(filePathsForNotUID);
+
+        for(String eachFile: filePathsForNotUID){
+            if (filePaths.contains(eachFile)){
+                filePaths.remove(eachFile);
+            }
+        }
+        return filePaths;
+    }
 }
