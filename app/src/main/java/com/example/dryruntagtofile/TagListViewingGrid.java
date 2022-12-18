@@ -14,23 +14,31 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
+
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class TagListViewingGrid extends AppCompatActivity {
+    DiskDB diskDB = null;
+    Toolbar toolbar;
+    TextView searchBarText;
+    private Integer searchOperation;
+
     RecyclerView tagGrid;
     List<String> tags;
     Integer image;
     GridAdapter gridadapter;
-    Toolbar toolbar;
-    private Integer searchOperation;
+
     /*
      * Search Operation
      * And -> 1
@@ -53,6 +61,7 @@ public class TagListViewingGrid extends AppCompatActivity {
         setContentView(R.layout.activity_tag_list_viewing_grid);
         tagGrid = findViewById(R.id.tagGrid);
         toolbar = findViewById(R.id.tbtoolbar);
+        searchBarText = findViewById(R.id.search_bar_text);
         this.setSupportActionBar(toolbar);
         this.getSupportActionBar().setTitle("");
 
@@ -71,6 +80,7 @@ public class TagListViewingGrid extends AppCompatActivity {
         tags.add("Tag8");
         tags.add("Tag9");
         tags.add("Tag10");
+//        syncTags();
         image = R.drawable.ic_baseline_edit_24;
         gridadapter = new GridAdapter(this, tags, image);
 
@@ -108,6 +118,12 @@ public class TagListViewingGrid extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void syncTags() {
+        diskDB = new DiskDB(this);
+        Set<String> tagsName = diskDB.getTags().keySet();
+        HashSet<String> tagsSet = new HashSet<>(tagsName);
+    }
+
     private void showDialog() {
         Dialog filterDialog = new Dialog(TagListViewingGrid.this, R.style.filter_dialog_theme);
         filterDialog.setContentView(R.layout.search_filter_dialog);
@@ -124,35 +140,34 @@ public class TagListViewingGrid extends AppCompatActivity {
         notChipGroup = filterDialog.findViewById(R.id.not_filter_chipGroup);
 
         btnFilterClose.setOnClickListener(view -> filterDialog.dismiss());
-//        btnAndFilter.setOnClickListener(view -> searchOperation = 1);
-//        btnOrFilter.setOnClickListener(view -> searchOperation = 2);
-//        btnNotFilter.setOnClickListener(view -> searchOperation = 3);
-
 
         btnAndFilter.setOnClickListener(view -> {
             searchOperation = 1;
+            searchBarText.setText("Search (Contains Each Tags)");
             filterDialog.dismiss();
         });
 
         btnOrFilter.setOnClickListener(view -> {
             searchOperation = 2;
+            searchBarText.setText("Search (Contains Tags)");
             filterDialog.dismiss();
         });
 
         btnNotFilter.setOnClickListener(view -> {
             searchOperation = 3;
+            searchBarText.setText("Search (Does NOT Contains Tags)");
             filterDialog.dismiss();
         });
 
-        andTags.add("Tag1");
-        andTags.add("Tag2");
-        andTags.add("Tag3");
-        andTags.add("Tag4");
-        andTags.add("Tag5");
-        orTags.add("Tag6");
-        orTags.add("Tag7");
-        orTags.add("Tag8");
-        notTags.add("Tag9");
+//        andTags.add("Tag1");
+//        andTags.add("Tag2");
+//        andTags.add("Tag3");
+//        andTags.add("Tag4");
+//        andTags.add("Tag5");
+//        orTags.add("Tag6");
+//        orTags.add("Tag7");
+//        orTags.add("Tag8");
+//        notTags.add("Tag9");
 
         switch(searchOperation) {
             case 1:
@@ -179,11 +194,11 @@ public class TagListViewingGrid extends AppCompatActivity {
 
     private void fillChipGroup(HashSet<String> chipGroupTags, ChipGroup chipGroup) {
         for (String tag: chipGroupTags) {
-            insertTag(tag, chipGroupTags, chipGroup);
+            insertChip(tag, chipGroupTags, chipGroup);
         }
     }
 
-    private void insertTag(String tagName, HashSet<String> chipGroupTags, ChipGroup chipGroup) {
+    private void insertChip(String tagName, HashSet<String> chipGroupTags, ChipGroup chipGroup) {
         Chip chip = new Chip(this);
         chip.setText(tagName);
         chip.setCloseIconVisible(true);
@@ -198,13 +213,12 @@ public class TagListViewingGrid extends AppCompatActivity {
         chipGroup.setVisibility(View.VISIBLE);
     }
 
-//    private HashSet<String> union(ArrayList<Integer> tags) {
+//    private HashSet<String> union(HashSet<Integer> tagsUID) {
 //        HashSet<String> unionSet = new HashSet<String>();
-//        for(Integer tagUID : tags) {
+//        for(Integer tagUID : tagsUID) {
 //            //getFilesForATag()
-//            String filesString = getFilesForATag(tagUID);
-//            ArrayList<String> files = (ArrayList<String>) Arrays.asList(filesString.split(";"));
-//            for (String filePath : files){
+//            String filesString[] = diskDB.listFilePathsFor(tagUID);
+//            for (String filePath : filesString){
 //                unionSet.add(filePath);
 //            }
 //        }

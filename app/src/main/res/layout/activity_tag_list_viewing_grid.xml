@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp">
             <TextView
+                android:id="@+id/search_bar_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
@@ -52,6 +53,7 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_search_filter"
+        android:contentDescription="Search Operation Filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
