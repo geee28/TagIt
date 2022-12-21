@@ -57,9 +57,11 @@ public class MemoryDB {
         return new ArrayList(tags.keySet());
     }
 
-    public void addTag(String tagName){
+    public void addTag(String tagName) throws Exception{
         int id = diskDB.addTag(tagName);
-
+        if(tags.containsKey(tagName)){
+            throw new Exception("Action Failed : Tag already present");
+        }
         tags.put(tagName, id);
         tagIds.put(id, tagName);
     }
