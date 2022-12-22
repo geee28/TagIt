@@ -5,7 +5,6 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Iterator;
 
@@ -19,7 +18,7 @@ public class MemoryDB {
     DiskDB diskDB = null;
     OpsLog ops = null;
 
-    MemoryDB(Context ctx){
+    private MemoryDB(Context ctx){
         diskDB = new DiskDB(ctx);
         ops = new OpsLog(ctx, this);
         refreshMemoryState();
@@ -58,26 +57,11 @@ public class MemoryDB {
         return new ArrayList(tags.keySet());
     }
 
-    public HashSet<String> getTagsSet(){
-        return new HashSet<>(tags.keySet());
-    }
-
-    public HashSet<Integer> getUIDSet(HashSet<String> tagNames){
-        HashSet<Integer> UIDSet = new HashSet<>();
-        int id;
-        for(String tagname: tagNames){
-            try{
-                id = tags.get(tagname);
-                UIDSet.add(id);
-            }
-            catch(NullPointerException e) { continue; }
-        }
-        return UIDSet;
-    }
-
-    public void addTag(String tagName){
+    public void addTag(String tagName) throws Exception{
         int id = diskDB.addTag(tagName);
-
+        if(tags.containsKey(tagName)){
+            throw new Exception("Action Failed : Tag already present");
+        }
         tags.put(tagName, id);
         tagIds.put(id, tagName);
     }
