@@ -1,6 +1,5 @@
 package com.example.dryruntagtofile;
 
-import static android.content.Context.ACTIVITY_SERVICE;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 import android.app.Activity;
@@ -8,7 +7,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.FileUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,17 +17,11 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.zip.Inflater;
 
 public class FileUtilPopup {
 
@@ -100,17 +92,17 @@ public class FileUtilPopup {
             public void onClick(View view) {
                 popup.dismiss();
 
-                AlertDialog.Builder renamePopup = new AlertDialog.Builder(ctx);
-                renamePopup.setTitle("Delete");
-                renamePopup.setMessage("Are you sure you want to delete "+file.getName()+" ?");
+                AlertDialog.Builder delPopup = new AlertDialog.Builder(ctx);
+                delPopup.setTitle("Delete");
+                delPopup.setMessage("Are you sure you want to delete "+file.getName()+" ?");
 
-                renamePopup.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                delPopup.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
                     }
                 });
-                renamePopup.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                delPopup.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
@@ -119,7 +111,7 @@ public class FileUtilPopup {
                         ((Activity) ctx).runOnUiThread(callback);
                     }
                 });
-                renamePopup.show();
+                delPopup.show();
             }
         });
 
@@ -130,7 +122,7 @@ public class FileUtilPopup {
                 LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(LAYOUT_INFLATER_SERVICE);
                 LinearLayout v = (LinearLayout) inflater.inflate(R.layout.rename_popup, null);
 
-                EditText fileNameView = ((EditText) v.findViewById(R.id.file_new_name));
+                EditText fileNameView = ((EditText) v.findViewById(R.id.text_input));
                 TextView fileTypeView = ((TextView) v.findViewById(R.id.file_type_info));
                 String fileName;
                 String fileType = "";
@@ -196,7 +188,6 @@ public class FileUtilPopup {
                 case "move": {
                     res = FileUtilities.moveFile(src, dest, false, false);
                     String destFilePath = Paths.get(destinationFilePath, src.getFileName().toString()).toString();
-                    //memdb.replaceFilePath(file.getAbsolutePath(), destFilePath);
                     ops.enqueue(OpsLog.FILE_MOVED, null, file.getAbsolutePath(), destFilePath);
                     break;
                 }
