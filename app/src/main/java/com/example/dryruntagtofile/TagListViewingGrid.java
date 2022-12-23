@@ -6,14 +6,17 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
@@ -35,7 +38,9 @@ public class TagListViewingGrid extends AppCompatActivity {
     Toolbar toolbar;
     TextView searchBarText;
     private Integer searchOperation;
+    private Boolean isFilterReturn = false;
 
+    TextView noTagsText;
     RecyclerView tagGrid;
     Integer image;
     GridAdapter gridadapter;
@@ -48,9 +53,15 @@ public class TagListViewingGrid extends AppCompatActivity {
     FloatingActionButton btnSearchFilter;
     // Dialog components
     ImageView btnFilterClose;
-    MaterialButton btnAndFilter, btnOrFilter, btnNotFilter;
+    MaterialButton btnAndFilter, btnOrFilter, btnNotFilter, btnClearFilter, btnFilterResult;
     private ChipGroup andChipGroup, orChipGroup, notChipGroup;
     ChipGroup chipGroup = null;
+
+    TextView ediTagName;
+    EditText editTag;
+    ImageView btnEditClose;
+    MaterialButton btnApplyChanges, btnDeleteTag;
+
     HashSet<String> tags = new HashSet<>();
     HashSet<String> filterResult = new HashSet<>();
     HashSet<String> andTags = new HashSet<>();
@@ -67,27 +78,43 @@ public class TagListViewingGrid extends AppCompatActivity {
         this.setSupportActionBar(toolbar);
         this.getSupportActionBar().setTitle("");
 
-        searchOperation = 1;
+        searchOperation = 0;
         btnSearchFilter = findViewById(R.id.btn_search_filter);
-        btnSearchFilter.setOnClickListener(view -> showDialog());
+        btnSearchFilter.setOnClickListener(view -> showFilterDialog());
+
+        noTagsText = findViewById(R.id.notags_text);
 
         memoryDB = new MemoryDB(this);
         tags = memoryDB.getTagsSet();
-        tags.add("Tag1");
-        tags.add("Tag2");
-        tags.add("Tag3");
-        tags.add("Tag4");
-        tags.add("Tag5");
-        tags.add("Tag6");
-        tags.add("Tag7");
-        tags.add("Tag8");
-        tags.add("Tag9");
-        tags.add("Tag10");
         image = R.drawable.ic_baseline_edit_24;
-//        for (Integer uid :tagUIDs) {
-//            Log.d("UID", String.valueOf(uid));
-//            System.out.println("UID"+uid);
+
+        //Set Report Visible if no Directory items are Available
+        if(tags==null || tags.isEmpty()){
+            noTagsText.setVisibility(View.VISIBLE);
+            return;
+        }
+        noTagsText.setVisibility(View.INVISIBLE);
+
+//        if(isFilterReturn) {
+//            Intent intent = getIntent();
+//            searchOperation = intent.getIntExtra("searchOperation", 0);
+//            switch(searchOperation) {
+//                case 1:
+//                    andTags = new HashSet<>(intent.getCategories());
+//                    break;
+//                case 2:
+//                    orTags = new HashSet<>(intent.getCategories());
+//                    break;
+//                case 3:
+//                    notTags = new HashSet<>(intent.getCategories());
+//                    break;
+//                default:
+//                    searchOperation = 0;
+//                    break;
+//            }
+//            showFilterDialog();
 //        }
+
         gridadapter = new GridAdapter(this, new ArrayList<>(tags), image);
         tagGrid.setLayoutManager( new LinearLayoutManager(this));
         tagGrid.setAdapter(gridadapter);
@@ -120,8 +147,46 @@ public class TagListViewingGrid extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void showDialog() {
-        Dialog filterDialog = new Dialog(TagListViewingGrid.this, R.style.filter_dialog_theme);
+    private void startFilterActivity(HashSet<String> filterTags, String searchText) {
+//        Intent intent = new Intent(TagListViewingGrid.this, FilterTagsSelection.class);
+//        intent.putExtra("tags", tags);
+//        intent.puExtra("searchText", searchText);
+//        intent.putExtra("filterTags", filterTags);
+//        startActivity(intent);
+    }
+
+    private void fillChipGroup(HashSet<String> chipGroupTags, ChipGroup chipGroup) {
+        for (String tag: chipGroupTags) {
+            insertChip(tag, chipGroupTags, chipGroup);
+        }
+    }
+
+    private void insertChip(String tagName, HashSet<String> chipGroupTags, ChipGroup chipGroup) {
+        Chip chip = new Chip(this);
+        chip.setText(tagName);
+        chip.setCloseIconVisible(true);
+        chip.setCheckable(false);
+        chip.setClickable(false);
+        chip.setOnCloseIconClickListener(view -> {
+            Chip chip1 = (Chip) view;
+            chipGroup.removeView(chip1);
+            if(chipGroup == andChipGroup){
+                andTags.remove(tagName);
+            }
+            else if(chipGroup == orChipGroup){
+                orTags.remove(tagName);
+            }
+            else{
+                notTags.remove(tagName);
+            }
+//            chipGroupTags.remove(tagName);
+        });
+        chipGroup.addView(chip);
+        chipGroup.setVisibility(View.VISIBLE);
+    }
+
+    private void showFilterDialog() {
+        Dialog filterDialog = new Dialog(TagListViewingGrid.this, R.style.dialog_theme);
         filterDialog.setContentView(R.layout.search_filter_dialog);
         filterDialog.setCancelable(true);
         filterDialog.setCanceledOnTouchOutside(true);
@@ -130,6 +195,8 @@ public class TagListViewingGrid extends AppCompatActivity {
         btnAndFilter = filterDialog.findViewById(R.id.btn_and_filter);
         btnOrFilter = filterDialog.findViewById(R.id.btn_or_filter);
         btnNotFilter = filterDialog.findViewById(R.id.btn_not_filter);
+        btnClearFilter = filterDialog.findViewById(R.id.btn_clear_filter);
+        btnFilterResult = filterDialog.findViewById(R.id.btn_filter_result);
 
         andChipGroup = filterDialog.findViewById(R.id.and_filter_chipGroup);
         orChipGroup = filterDialog.findViewById(R.id.or_filter_chipGroup);
@@ -139,19 +206,45 @@ public class TagListViewingGrid extends AppCompatActivity {
 
         btnAndFilter.setOnClickListener(view -> {
             searchOperation = 1;
-            searchBarText.setText("Search (Contains Each Tags)");
+            startFilterActivity(andTags, "Search (Contains Each Tags)");
+//            searchBarText.setText("Search (Contains Each Tags)");
             filterDialog.dismiss();
         });
 
         btnOrFilter.setOnClickListener(view -> {
             searchOperation = 2;
-            searchBarText.setText("Search (Contains Tags)");
+            startFilterActivity(orTags, "Search (Contains Tags)");
+//            searchBarText.setText("Search (Contains Tags)");
             filterDialog.dismiss();
         });
 
         btnNotFilter.setOnClickListener(view -> {
             searchOperation = 3;
-            searchBarText.setText("Search (Does NOT Contains Tags)");
+            startFilterActivity(notTags, "Search (Does NOT Contains Tags)");
+//            searchBarText.setText("Search (Does NOT Contains Tags)");
+            filterDialog.dismiss();
+        });
+
+        btnClearFilter.setOnClickListener(view -> {
+            andTags.clear();
+            orTags.clear();
+            notTags.clear();
+            filterDialog.dismiss();
+            Toast.makeText(view.getContext(),"Filters Cleared",Toast.LENGTH_LONG).show();
+        });
+
+        btnFilterResult.setOnClickListener(view -> {
+            HashSet<String> andBox = intersection(memoryDB.getUIDSet(andTags));
+            HashSet<String> orBox = union(memoryDB.getUIDSet(orTags));
+
+            HashSet<String> intersectAO = new HashSet<>();
+            intersectAO.retainAll(andBox);
+            intersectAO.retainAll(orBox);
+
+            filterResult.clear();
+            filterResult = filterNot(intersectAO, memoryDB.getUIDSet(notTags));
+            Toast.makeText(view.getContext(),"Filtered Results",Toast.LENGTH_LONG).show();
+            //start Result activity
             filterDialog.dismiss();
         });
 
@@ -179,26 +272,50 @@ public class TagListViewingGrid extends AppCompatActivity {
         filterDialog.show();
     }
 
-    private void fillChipGroup(HashSet<String> chipGroupTags, ChipGroup chipGroup) {
-        for (String tag: chipGroupTags) {
-            insertChip(tag, chipGroupTags, chipGroup);
-        }
-    }
 
-    private void insertChip(String tagName, HashSet<String> chipGroupTags, ChipGroup chipGroup) {
-        Chip chip = new Chip(this);
-        chip.setText(tagName);
-        chip.setCloseIconVisible(true);
-        chip.setCheckable(false);
-        chip.setClickable(false);
-        chip.setOnCloseIconClickListener(view -> {
-            Chip chip1 = (Chip) view;
-            chipGroup.removeView(chip1);
-            chipGroupTags.remove(tagName);
-        });
-        chipGroup.addView(chip);
-        chipGroup.setVisibility(View.VISIBLE);
-    }
+
+//    private void showEditDialog(String tagName) {
+//        MemoryDB memoryDB = new MemoryDB(this);
+//
+//        Dialog editDialog = new Dialog(this, R.style.dialog_theme);
+//        editDialog.setContentView(R.layout.edit_tag_layout);
+//        editDialog.setCancelable(true);
+//        editDialog.setCanceledOnTouchOutside(true);
+//
+//
+//        ediTagName = editDialog.findViewById(R.id.edit_tag_name);
+//        editTag = editDialog.findViewById(R.id.edit_name_field);
+//        btnEditClose = editDialog.findViewById(R.id.btn_edit_tag_close);
+//        btnApplyChanges = editDialog.findViewById(R.id.btn_apply_changes);
+//        btnDeleteTag = editDialog.findViewById(R.id.btn_delete_tag);
+//
+//        ediTagName.setText(tagName);
+//
+//        btnEditClose.setOnClickListener(view -> editDialog.dismiss());
+//
+//        btnApplyChanges.setOnClickListener(view -> {
+//            String newTagName = editTag.getText().toString();
+//
+//            memoryDB.updateTag( tagName,  newTagName);
+//            tags.remove(tagName);
+//            tags.add(newTagName);
+//            Toast.makeText(view.getContext(),"Tag Changed",Toast.LENGTH_LONG).show();
+//            editDialog.dismiss();
+//        });
+//
+//        btnDeleteTag.setOnClickListener(view -> {
+//            try {
+//                memoryDB.removeTag(tagName);
+//                tags.remove(tagName);
+//                Toast.makeText(view.getContext(),"Tag Deleted",Toast.LENGTH_LONG).show();
+//            } catch (Exception e) {
+//                Toast.makeText(view.getContext(),"Tag Could NOT be Deleted",Toast.LENGTH_LONG).show();
+//                throw new RuntimeException(e);
+//            }
+//            editDialog.dismiss();
+//        });
+//        editDialog.show();
+//    }
 
 
     private HashSet<String> union(HashSet<Integer> tagsUID) {

@@ -38,7 +38,7 @@ public class TagsMainActivity extends AppCompatActivity{
     }
 
     private void showDialog() {
-        Dialog filterDialog = new Dialog(TagsMainActivity.this, R.style.filter_dialog_theme);
+        Dialog filterDialog = new Dialog(TagsMainActivity.this, R.style.dialog_theme);
         filterDialog.setContentView(R.layout.search_filter_dialog);
         filterDialog.setCancelable(true);
         filterDialog.setCanceledOnTouchOutside(true);

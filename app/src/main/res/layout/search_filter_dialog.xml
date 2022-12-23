@@ -48,7 +48,6 @@
         android:layout_gravity="center"
         android:layout_marginHorizontal="15dp"
         android:layout_marginVertical="20dp"
-        app:cardBackgroundColor="#6200ED"
         app:cardCornerRadius="5dp">
 
         <RelativeLayout
@@ -57,6 +56,8 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_and_filter"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:textColor="#673AB7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:insetTop="0dp"
@@ -85,7 +86,6 @@
         android:layout_gravity="center"
         android:layout_marginHorizontal="15dp"
         android:layout_marginVertical="20dp"
-        app:cardBackgroundColor="#6200ED"
         app:cardCornerRadius="5dp">
 
         <RelativeLayout
@@ -94,14 +94,18 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_or_filter"
-                style="@style/Widget.AppCompat.Button.Borderless"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:textColor="#673AB7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="0dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="0dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:text="CONTAINS"
-                android:textAlignment="viewStart"/>
+                android:textAlignment="viewStart" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/or_filter_chipGroup"
@@ -123,7 +127,6 @@
         android:layout_gravity="center"
         android:layout_marginHorizontal="15dp"
         android:layout_marginVertical="20dp"
-        app:cardBackgroundColor="#6200ED"
         app:cardCornerRadius="5dp">
 
         <RelativeLayout
@@ -132,7 +135,8 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_not_filter"
-                style="@style/Widget.AppCompat.Button.Borderless"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:textColor="#673AB7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
@@ -164,6 +168,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btn_clear_filter"
+            android:backgroundTint="#D32F2F"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:text="Clear Filter"

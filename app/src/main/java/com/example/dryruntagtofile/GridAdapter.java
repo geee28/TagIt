@@ -1,9 +1,11 @@
 package com.example.dryruntagtofile;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -13,17 +15,27 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> implements Filterable {
 
+    Context ctx;
     List<String> tags;
     List<String> tagsFiltered;
     Integer image;
     LayoutInflater inflater;
 
+    TextView ediTagName;
+    EditText editTag;
+    ImageView btnEditClose;
+    MaterialButton btnApplyChanges, btnDeleteTag;
+
     public GridAdapter(Context ctx, List<String> tags, Integer image){
+        this.ctx = ctx;
         this.tags = tags;
         this.tagsFiltered = tags;
         this.image = image;
@@ -43,9 +55,9 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> im
                 else{
                     String searchChar = charSequence.toString().toLowerCase();
                     List<String> filteredResults = new ArrayList<>();
-                    for(String tagname:tagsFiltered){
-                        if(tagname.toLowerCase().contains(searchChar)){
-                            filteredResults.add(tagname);
+                    for(String tagName:tagsFiltered){
+                        if(tagName.toLowerCase().contains(searchChar)){
+                            filteredResults.add(tagName);
                         }
                     }
                     filterResults.values = filteredResults;
@@ -71,6 +83,11 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> im
             super(itemView);
             tagname = itemView.findViewById(R.id.grid_tname);
             editIcon = itemView.findViewById(R.id.grid_image);
+
+//            editIcon.setOnClickListener(view -> {
+//                showEditDialog(tagname.getText().toString());
+//                Toast.makeText(view.getContext(),"Edit "+ tags.get(getAdapterPosition()),Toast.LENGTH_LONG).show();
+//            });
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -79,7 +96,6 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> im
             });
         }
     }
-
 
     @NonNull
     @Override
@@ -99,5 +115,48 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> im
         return tags.size();
     }
 
+//
+//    private void showEditDialog(String tagName) {
+//        MemoryDB memoryDB = new MemoryDB(ctx);
+//
+//        Dialog editDialog = new Dialog(ctx, R.style.dialog_theme);
+//        editDialog.setContentView(R.layout.edit_tag_layout);
+//        editDialog.setCancelable(true);
+//        editDialog.setCanceledOnTouchOutside(true);
+//
+//
+//        ediTagName = editDialog.findViewById(R.id.edit_tag_name);
+//        editTag = editDialog.findViewById(R.id.edit_name_field);
+//        btnEditClose = editDialog.findViewById(R.id.btn_edit_tag_close);
+//        btnApplyChanges = editDialog.findViewById(R.id.btn_apply_changes);
+//        btnDeleteTag = editDialog.findViewById(R.id.btn_delete_tag);
+//
+//        ediTagName.setText(tagName);
+//
+//        btnEditClose.setOnClickListener(view -> editDialog.dismiss());
+//
+//        btnApplyChanges.setOnClickListener(view -> {
+//            String newTagName = editTag.getText().toString();
+//
+//            memoryDB.updateTag( tagName,  newTagName);
+//            tags.remove(tagName);
+//            tags.add(newTagName);
+//            Toast.makeText(view.getContext(),"Tag Changed",Toast.LENGTH_LONG).show();
+//            editDialog.dismiss();
+//        });
+//
+//        btnDeleteTag.setOnClickListener(view -> {
+//            try {
+//                memoryDB.removeTag(tagName);
+//                tags.remove(tagName);
+//                Toast.makeText(view.getContext(),"Tag Deleted",Toast.LENGTH_LONG).show();
+//            } catch (Exception e) {
+//                Toast.makeText(view.getContext(),"Tag Could NOT be Deleted",Toast.LENGTH_LONG).show();
+//                throw new RuntimeException(e);
+//            }
+//            editDialog.dismiss();
+//        });
+//        editDialog.show();
+//    }
 
 }

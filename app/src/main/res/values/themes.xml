@@ -20,7 +20,7 @@
     </style>
 
     <!-- Search Filter Dialog Theme-->
-    <style name="filter_dialog_theme" parent="ThemeOverlay.AppCompat.Light" >
+    <style name="dialog_theme" parent="ThemeOverlay.AppCompat.Light" >
         <item name="windowMinWidthMajor">90%</item>
         <item name="windowMinWidthMinor">90%</item>
         <item name="windowFixedHeightMajor">80%</item>
