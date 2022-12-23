@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.hardware.lights.LightState;
 import android.util.Log;
 
 import java.nio.file.Paths;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 public class DiskDB extends SQLiteOpenHelper {
 
@@ -179,7 +181,7 @@ public class DiskDB extends SQLiteOpenHelper {
         Cursor c = db.query(tableTagToFiles, new String[]{Schema.TagToFiles.fileList}, Schema.TagToFiles.tag_uid+"="+tagId, null, null, null, null, l);
         c.moveToFirst();
         // use FileList class to put to array
-        String filePaths[] = c.getString(0).split(delimeter);
+        String filePaths[] = (c.getString(0).split(delimeter));
         FileItem[] files = new FileItem[filePaths.length];
         for(int i = 0; i < filePaths.length; i++){
             files[i] = new FileItem(filePaths[i]);

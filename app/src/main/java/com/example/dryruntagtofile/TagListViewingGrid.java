@@ -21,6 +21,7 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,7 +52,7 @@ public class TagListViewingGrid extends AppCompatActivity {
     private ChipGroup andChipGroup, orChipGroup, notChipGroup;
     ChipGroup chipGroup = null;
     HashSet<String> tags = new HashSet<>();
-    HashSet<Integer> tagUIDs = new HashSet<>();
+    HashSet<String> filterResult = new HashSet<>();
     HashSet<String> andTags = new HashSet<>();
     HashSet<String> orTags = new HashSet<>();
     HashSet<String> notTags = new HashSet<>();
@@ -70,7 +71,8 @@ public class TagListViewingGrid extends AppCompatActivity {
         btnSearchFilter = findViewById(R.id.btn_search_filter);
         btnSearchFilter.setOnClickListener(view -> showDialog());
 
-        tags = syncTags();
+        memoryDB = new MemoryDB(this);
+        tags = memoryDB.getTagsSet();
         tags.add("Tag1");
         tags.add("Tag2");
         tags.add("Tag3");
@@ -82,15 +84,12 @@ public class TagListViewingGrid extends AppCompatActivity {
         tags.add("Tag9");
         tags.add("Tag10");
         image = R.drawable.ic_baseline_edit_24;
-        tagUIDs = memoryDB.getUIDSet(tags);
 //        for (Integer uid :tagUIDs) {
 //            Log.d("UID", String.valueOf(uid));
 //            System.out.println("UID"+uid);
 //        }
         gridadapter = new GridAdapter(this, new ArrayList<>(tags), image);
-
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        tagGrid.setLayoutManager(llm);
+        tagGrid.setLayoutManager( new LinearLayoutManager(this));
         tagGrid.setAdapter(gridadapter);
 
     }
@@ -119,11 +118,6 @@ public class TagListViewingGrid extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         return super.onOptionsItemSelected(item);
-    }
-
-    private HashSet<String> syncTags() {
-        memoryDB = new MemoryDB(this);
-        return memoryDB.getTagsSet();
     }
 
     private void showDialog() {
@@ -207,30 +201,28 @@ public class TagListViewingGrid extends AppCompatActivity {
     }
 
 
-//    private HashSet<String> union(HashSet<Integer> tagsUID) {
-//        HashSet<String> unionSet = new HashSet<String>();
-//        for(Integer tagUID : tagsUID) {
-//            //getFilesForATag()
-//            String filesString[] = diskDB.listFilePathsFor(tagUID);
+    private HashSet<String> union(HashSet<Integer> tagsUID) {
+        HashSet<String> unionSet = new HashSet<String>();
+        for(Integer tagUID : tagsUID) {
+            String filesString[] = diskDB.listFilePathsFor(tagUID);
+            unionSet.addAll(Arrays.asList(filesString));
 //            for (String filePath : filesString){
 //                unionSet.add(filePath);
 //            }
-//        }
-//        return unionSet;
-//    }
+        }
+        return unionSet;
+    }
 
-//    private HashSet<Integer> intersection(HashSet<Integer> tags) {
-//        HashSet<Integer> result = new HashSet<>();
-//
-//        Iterator<Integer> itr = tags.iterator();
-//        Integer tag1 = itr.next();
-//        while (itr.hasNext()) {
-//            //itr.next();
-//        }
-//        return result;
-//    }
+    private HashSet<String> intersection(HashSet<Integer> tagsUID) {
+        HashSet<String> intersectionSet = new HashSet<>();
+        for (Integer tagUID: tagsUID) {
+            String filesString[] = diskDB.listFilePathsFor(tagUID);
+            intersectionSet.retainAll(Arrays.asList(filesString));
+        }
+        return intersectionSet;
+    }
 
-    private HashSet<String> NOT(HashSet<String> filePaths, HashSet<Integer> notTags) {
+    private HashSet<String> filterNot(HashSet<String> filePaths, HashSet<Integer> notTags) {
         diskDB = new DiskDB(this);
         HashSet<String> notFilePaths = new HashSet<>();
         ArrayList<String> filePathsForNotUID = new ArrayList<>();
