@@ -23,6 +23,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -148,11 +149,12 @@ public class TagListViewingGrid extends AppCompatActivity {
     }
 
     private void startFilterActivity(HashSet<String> filterTags, String searchText) {
-//        Intent intent = new Intent(TagListViewingGrid.this, FilterTagsSelection.class);
-//        intent.putExtra("tags", tags);
-//        intent.puExtra("searchText", searchText);
-//        intent.putExtra("filterTags", filterTags);
-//        startActivity(intent);
+        ArrayList<String> availableTags = new ArrayList<>();
+        availableTags.addAll(tags);
+        Intent intent = new Intent(TagListViewingGrid.this, FilterTagListSelection.class);
+        intent.putStringArrayListExtra("tags", availableTags);
+        intent.putExtra("searchText", searchText);intent.putExtra("filterTags", filterTags);
+        startActivity(intent);
     }
 
     private void fillChipGroup(HashSet<String> chipGroupTags, ChipGroup chipGroup) {
