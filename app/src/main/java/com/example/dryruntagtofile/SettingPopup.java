@@ -24,6 +24,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.flexbox.FlexboxLayout;
 
 import java.io.File;
@@ -41,7 +43,8 @@ public class SettingPopup {
     PopupWindow popup;
     View popupRoot;
     View view;
-    MyAdapter.ViewHolder itemView;
+    MyAdapter.ViewHolder itemView_MyAdapter;
+    FilterResultAdapter.ViewHolder itemView_FilterResultAdapter;
     MemoryDB memdb;
     ArrayList<String> fileTags = new ArrayList<>();
     ArrayAdapter<String> availableTagsAdapter;
@@ -214,12 +217,23 @@ public class SettingPopup {
     }
 
     public void attachItem(MyAdapter.ViewHolder item){
-        this.itemView = item;
+        this.itemView_MyAdapter = item;
         popup.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
                 open = false;
-                item.populateData(file.getAbsoluteFile());
+                itemView_MyAdapter.populateData(file.getAbsoluteFile());
+            }
+        });
+    }
+
+    public void attachItem(FilterResultAdapter.ViewHolder item){
+        this.itemView_FilterResultAdapter = item;
+        popup.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                open = false;
+                itemView_FilterResultAdapter.populateData(file.getAbsoluteFile());
             }
         });
     }

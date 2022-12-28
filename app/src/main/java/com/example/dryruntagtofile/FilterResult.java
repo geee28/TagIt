@@ -40,11 +40,12 @@ public class FilterResult extends AppCompatActivity {
 
         filePaths = new HashSet<>(getIntent().getStringArrayListExtra("filePaths"));
 
+        Log.d("TAG_FILE_PATH", filePaths.toString());
         if(filePaths.isEmpty()){
             noFilesText.setVisibility(View.VISIBLE);
             return;
         }
-        noFilesText.setVisibility(View.INVISIBLE);
+        noFilesText.setVisibility(View.GONE);
 
         filterResultAdapter = new FilterResultAdapter(this, new ArrayList<>(filePaths));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -57,14 +58,17 @@ class FilterResultAdapter extends RecyclerView.Adapter<FilterResultAdapter.ViewH
 
     Context ctx;
     ArrayList<File> files = new ArrayList<>();
-    public MemoryDB memoryDB;
-    ArrayList<String> filePaths;
+    MemoryDB memoryDB;
     FileUtilPopup fileContextMenu;
 
 
     public FilterResultAdapter(Context ctx, ArrayList<String> filePaths){
         this.ctx = ctx;
-        this.filePaths = filePaths;
+        int len = filePaths.size();
+        for(int i = 0; i < len; i++){
+            files.add(new File(filePaths.get(i)));
+        }
+        memoryDB = MemoryDB.getInstance(ctx);
     }
 
     @NonNull
@@ -134,7 +138,7 @@ class FilterResultAdapter extends RecyclerView.Adapter<FilterResultAdapter.ViewH
             tagPopupOpener.setOnClickListener(view -> {
                 memoryDB.refreshTagList();
                 SettingPopup popup = new SettingPopup(ctx, itemView, memoryDB);
-//                popup.attachItem(ViewHolder.this);
+                popup.attachItem(ViewHolder.this);
                 popup.openPopup(file.getAbsolutePath());
             });
 
