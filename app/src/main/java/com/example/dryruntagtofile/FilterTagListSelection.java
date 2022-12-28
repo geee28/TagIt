@@ -17,6 +17,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +30,7 @@ import androidx.appcompat.widget.Toolbar;
 public class FilterTagListSelection extends AppCompatActivity {
 
     CheckedTagsAdapter adapter;
+    ArrayList<String> presentTags;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +46,13 @@ public class FilterTagListSelection extends AppCompatActivity {
         ArrayList<String> availableTags = tags;
         Integer searchOperation = this.getIntent().getIntExtra("searchOperation", 0);
 
-//        ArrayList<String> presentTags = this.getIntent().getStringArrayListExtra("presentTags");
+        presentTags = this.getIntent().getStringArrayListExtra("presentTags");
         ArrayList<String> exclusiveTags = this.getIntent().getStringArrayListExtra("exclusiveTags");;
         if (exclusiveTags != null && exclusiveTags.size() > 0) {
             availableTags.removeAll(exclusiveTags);
         }
 
-        adapter = new CheckedTagsAdapter(this, tags, availableTags);
+        adapter = new CheckedTagsAdapter(this, tags, availableTags, presentTags);
         RecyclerView availableTagsView = findViewById(R.id.tag_selection_list);
         availableTagsView.setLayoutManager(new LinearLayoutManager(this));
         availableTagsView.setAdapter(adapter);
@@ -103,14 +105,17 @@ class CheckedTagsAdapter extends RecyclerView.Adapter<CheckedTagsAdapter.ViewHol
     Context ctx;
     List<String> tags;
     List<String> availableTags;
+    ArrayList<String> presentTags;
     HashSet<String> tagsFiltered = new HashSet<>();
     LayoutInflater inflater;
 
-    public CheckedTagsAdapter(Context ctx, ArrayList<String> tags, ArrayList<String> availableTags){
+    public CheckedTagsAdapter(Context ctx, ArrayList<String> tags, ArrayList<String> availableTags, ArrayList<String> presentTags){
         this.ctx = ctx;
         this.tags = tags;
+        this.presentTags = presentTags;
         this.availableTags = availableTags;
         this.inflater = LayoutInflater.from(ctx);
+        tagsFiltered.addAll(presentTags);
     }
 
     public Filter getFilter() {
@@ -148,18 +153,27 @@ class CheckedTagsAdapter extends RecyclerView.Adapter<CheckedTagsAdapter.ViewHol
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView tagName;
         CheckBox checkBox;
+        androidx.cardview.widget.CardView tagHolder;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             checkBox = itemView.findViewById(R.id.tag_checkbox);
             tagName = itemView.findViewById(R.id.grid_tname);
+            tagHolder = itemView.findViewById(R.id.tag_cont);
             itemView.findViewById(R.id.grid_image).setVisibility(View.GONE);
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Toast.makeText(view.getContext(),"Selected "+ tags.get(getAdapterPosition()),Toast.LENGTH_LONG).show();
-//                }
-//            });
+            /*itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (checkBox.isChecked()) {
+//                        filteredTags.add(tags.get(position));
+                        tagsFiltered.add(tags.get(getAdapterPosition()));
+                    }
+                    else {
+//                        filteredTags.remove(tags.get(position));
+                        tagsFiltered.remove(tags.get(getAdapterPosition()));
+                    }
+                }
+            });*/
         }
     }
 
@@ -175,7 +189,23 @@ class CheckedTagsAdapter extends RecyclerView.Adapter<CheckedTagsAdapter.ViewHol
     public void onBindViewHolder(@NonNull CheckedTagsAdapter.ViewHolder holder, int position) {
         holder.tagName.setText(tags.get(position));
         holder.checkBox.setVisibility(View.VISIBLE);
+        if(presentTags.size() > 0 && presentTags.contains(tags.get(position))){
+            holder.checkBox.setChecked(true);
+        }
         if(tags != null && tags.size() > 0) {
+            /*holder.tagHolder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (holder.checkBox.isChecked()) {
+//                        filteredTags.add(tags.get(position));
+                        tagsFiltered.add(tags.get(holder.getAdapterPosition()));
+                    }
+                    else {
+//                        filteredTags.remove(tags.get(position));
+                        tagsFiltered.remove(tags.get(holder.getAdapterPosition()));
+                    }
+                }
+            });*/
             holder.checkBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

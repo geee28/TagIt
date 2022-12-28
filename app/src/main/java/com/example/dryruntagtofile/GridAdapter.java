@@ -85,10 +85,10 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> im
             tagname = itemView.findViewById(R.id.grid_tname);
             editIcon = itemView.findViewById(R.id.grid_image);
 
-//            editIcon.setOnClickListener(view -> {
-//                showEditDialog(tagname.getText().toString());
-//                Toast.makeText(view.getContext(),"Edit "+ tags.get(getAdapterPosition()),Toast.LENGTH_LONG).show();
-//            });
+            editIcon.setOnClickListener(view -> {
+                showEditDialog(tagname.getText().toString());
+                Toast.makeText(view.getContext(),"Edit "+ tags.get(getAdapterPosition()),Toast.LENGTH_LONG).show();
+            });
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -119,48 +119,50 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> im
         return tags.size();
     }
 
-//
-//    private void showEditDialog(String tagName) {
-//        MemoryDB memoryDB = new MemoryDB(ctx);
-//
-//        Dialog editDialog = new Dialog(ctx, R.style.dialog_theme);
-//        editDialog.setContentView(R.layout.edit_tag_layout);
-//        editDialog.setCancelable(true);
-//        editDialog.setCanceledOnTouchOutside(true);
-//
-//
-//        ediTagName = editDialog.findViewById(R.id.edit_tag_name);
-//        editTag = editDialog.findViewById(R.id.edit_name_field);
-//        btnEditClose = editDialog.findViewById(R.id.btn_edit_tag_close);
-//        btnApplyChanges = editDialog.findViewById(R.id.btn_apply_changes);
-//        btnDeleteTag = editDialog.findViewById(R.id.btn_delete_tag);
-//
-//        ediTagName.setText(tagName);
-//
-//        btnEditClose.setOnClickListener(view -> editDialog.dismiss());
-//
-//        btnApplyChanges.setOnClickListener(view -> {
-//            String newTagName = editTag.getText().toString();
-//
-//            memoryDB.updateTag( tagName,  newTagName);
-//            tags.remove(tagName);
-//            tags.add(newTagName);
-//            Toast.makeText(view.getContext(),"Tag Changed",Toast.LENGTH_LONG).show();
-//            editDialog.dismiss();
-//        });
-//
-//        btnDeleteTag.setOnClickListener(view -> {
-//            try {
-//                memoryDB.removeTag(tagName);
-//                tags.remove(tagName);
-//                Toast.makeText(view.getContext(),"Tag Deleted",Toast.LENGTH_LONG).show();
-//            } catch (Exception e) {
-//                Toast.makeText(view.getContext(),"Tag Could NOT be Deleted",Toast.LENGTH_LONG).show();
-//                throw new RuntimeException(e);
-//            }
-//            editDialog.dismiss();
-//        });
-//        editDialog.show();
-//    }
+
+    private void showEditDialog(String tagName) {
+        MemoryDB memoryDB = MemoryDB.getInstance(ctx);
+
+        Dialog editDialog = new Dialog(ctx, R.style.dialog_theme);
+        editDialog.setContentView(R.layout.edit_tag_layout);
+        editDialog.setCancelable(true);
+        editDialog.setCanceledOnTouchOutside(true);
+
+
+        ediTagName = editDialog.findViewById(R.id.edit_tag_name);
+        editTag = editDialog.findViewById(R.id.edit_name_field);
+        btnEditClose = editDialog.findViewById(R.id.btn_edit_tag_close);
+        btnApplyChanges = editDialog.findViewById(R.id.btn_apply_changes);
+        btnDeleteTag = editDialog.findViewById(R.id.btn_delete_tag);
+
+        ediTagName.setText(tagName);
+
+        btnEditClose.setOnClickListener(view -> editDialog.dismiss());
+
+        btnApplyChanges.setOnClickListener(view -> {
+            String newTagName = editTag.getText().toString();
+
+            memoryDB.updateTag( tagName,  newTagName);
+            tags.remove(tagName);
+            tags.add(newTagName);
+            Toast.makeText(view.getContext(),"Tag Changed",Toast.LENGTH_LONG).show();
+            editDialog.dismiss();
+            notifyDataSetChanged();
+        });
+
+        btnDeleteTag.setOnClickListener(view -> {
+            try {
+                memoryDB.removeTag(tagName);
+                tags.remove(tagName);
+                Toast.makeText(view.getContext(),"Tag Deleted",Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Toast.makeText(view.getContext(),"Tag Could NOT be Deleted",Toast.LENGTH_LONG).show();
+                throw new RuntimeException(e);
+            }
+            editDialog.dismiss();
+            notifyDataSetChanged();
+        });
+        editDialog.show();
+    }
 
 }
