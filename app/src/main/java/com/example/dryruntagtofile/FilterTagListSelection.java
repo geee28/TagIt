@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,8 +40,17 @@ public class FilterTagListSelection extends AppCompatActivity {
         this.setSupportActionBar(toolbar);
         this.getSupportActionBar().setTitle("");
 
-        ArrayList<String> availableTags = this.getIntent().getStringArrayListExtra("tags");
-        adapter = new CheckedTagsAdapter(this, availableTags);
+        ArrayList<String> tags = this.getIntent().getStringArrayListExtra("tags");
+        ArrayList<String> availableTags = tags;
+        Integer searchOperation = this.getIntent().getIntExtra("searchOperation", 0);
+
+//        ArrayList<String> presentTags = this.getIntent().getStringArrayListExtra("presentTags");
+        ArrayList<String> exclusiveTags = this.getIntent().getStringArrayListExtra("exclusiveTags");;
+        if (exclusiveTags != null && exclusiveTags.size() > 0) {
+            availableTags.removeAll(exclusiveTags);
+        }
+
+        adapter = new CheckedTagsAdapter(this, tags, availableTags);
         RecyclerView availableTagsView = findViewById(R.id.tag_selection_list);
         availableTagsView.setLayoutManager(new LinearLayoutManager(this));
         availableTagsView.setAdapter(adapter);
@@ -49,9 +59,12 @@ public class FilterTagListSelection extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ArrayList<String> selectedTags = new ArrayList<>();
+//                selectedTags.addAll(filteredTags);
                 selectedTags.addAll(adapter.getSelectedTags());
                 Intent intent = new Intent();
                 intent.putStringArrayListExtra("selected_tags", selectedTags);
+                intent.putExtra("searchOperation", searchOperation);
+
                 setResult(RESULT_OK, intent);
                 finish();
             }
@@ -93,10 +106,10 @@ class CheckedTagsAdapter extends RecyclerView.Adapter<CheckedTagsAdapter.ViewHol
     HashSet<String> tagsFiltered = new HashSet<>();
     LayoutInflater inflater;
 
-    public CheckedTagsAdapter(Context ctx, ArrayList<String> tags){
+    public CheckedTagsAdapter(Context ctx, ArrayList<String> tags, ArrayList<String> availableTags){
         this.ctx = ctx;
         this.tags = tags;
-        this.availableTags = tags;
+        this.availableTags = availableTags;
         this.inflater = LayoutInflater.from(ctx);
     }
 
@@ -182,7 +195,7 @@ class CheckedTagsAdapter extends RecyclerView.Adapter<CheckedTagsAdapter.ViewHol
 
     @Override
     public int getItemCount() {
-        return tags.size();
+        return availableTags.size();
     }
 
     public HashSet<String> getSelectedTags(){

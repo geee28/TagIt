@@ -1,11 +1,14 @@
 package com.example.dryruntagtofile;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,23 +26,19 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
 public class TagListViewingGrid extends AppCompatActivity {
     DiskDB diskDB = null;
     MemoryDB memoryDB = null;
+
+    Context ctx;
     Toolbar toolbar;
     TextView searchBarText;
     private Integer searchOperation;
-    private Boolean isFilterReturn = false;
 
     TextView noTagsText;
     RecyclerView tagGrid;
@@ -69,6 +68,55 @@ public class TagListViewingGrid extends AppCompatActivity {
     HashSet<String> orTags = new HashSet<>();
     HashSet<String> notTags = new HashSet<>();
 
+
+    ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+        new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                Log.d("TAG", "onActivity Result");
+                if (result.getResultCode() == RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        Integer searchOperationResult = data.getIntExtra("searchOperation", 0);
+                        HashSet<String> selectedTags = new HashSet<>(data.getStringArrayListExtra("selected_tags"));
+//                        for (String selectedTag: selectedTags) {
+//                            Log.d("FILTER_RESULT", selectedTag);
+//                        }
+                        switch (searchOperationResult) {
+                            case 1: {
+//                                andTags.addAll(selectedTags);
+                                andTags = selectedTags;
+                                Log.d("FILTER_RESULT", "AND Result");
+                                break;
+                            }
+                            case 2: {
+//                                orTags.addAll(selectedTags);
+                                orTags = selectedTags;
+                                Log.d("FILTER_RESULT", "OR Result");
+                                break;
+                            }
+                            case 3: {
+//                                notTags.addAll(selectedTags);
+                                notTags = selectedTags;
+                                Log.d("FILTER_RESULT", "NOT Result");
+                                break;
+                            }
+                            default: {
+//                                Intent intent = getIntent();
+                                finish();
+//                                startActivity(intent);
+                                Log.d("FILTER_RESULT", "Activity Restarted");
+                                break;
+                            }
+                        }
+                        showFilterDialog();
+                    }
+                    else {
+                        Log.d("FILTER_RESULT", "TAGS Selection ERROR");
+                    }
+                }
+            }
+    );
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +126,8 @@ public class TagListViewingGrid extends AppCompatActivity {
         searchBarText = findViewById(R.id.search_bar_text);
         this.setSupportActionBar(toolbar);
         this.getSupportActionBar().setTitle("");
+
+        ctx = TagListViewingGrid.this;
 
         searchOperation = 0;
         btnSearchFilter = findViewById(R.id.btn_search_filter);
@@ -95,26 +145,6 @@ public class TagListViewingGrid extends AppCompatActivity {
             return;
         }
         noTagsText.setVisibility(View.INVISIBLE);
-
-//        if(isFilterReturn) {
-//            Intent intent = getIntent();
-//            searchOperation = intent.getIntExtra("searchOperation", 0);
-//            switch(searchOperation) {
-//                case 1:
-//                    andTags = new HashSet<>(intent.getCategories());
-//                    break;
-//                case 2:
-//                    orTags = new HashSet<>(intent.getCategories());
-//                    break;
-//                case 3:
-//                    notTags = new HashSet<>(intent.getCategories());
-//                    break;
-//                default:
-//                    searchOperation = 0;
-//                    break;
-//            }
-//            showFilterDialog();
-//        }
 
         gridadapter = new GridAdapter(this, new ArrayList<>(tags), image);
         tagGrid.setLayoutManager( new LinearLayoutManager(this));
@@ -148,13 +178,16 @@ public class TagListViewingGrid extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void startFilterActivity(HashSet<String> filterTags, String searchText) {
-        ArrayList<String> availableTags = new ArrayList<>();
-        availableTags.addAll(tags);
+    private void startFilterActivity(HashSet<String> presentTags, HashSet<String> exclusiveTags, String searchText, Integer searchOperation) {
+        ArrayList<String> availableTags = new ArrayList<>(tags);
         Intent intent = new Intent(TagListViewingGrid.this, FilterTagListSelection.class);
+        intent.putExtra("searchOperation", searchOperation);
         intent.putStringArrayListExtra("tags", availableTags);
-        intent.putExtra("searchText", searchText);intent.putExtra("filterTags", filterTags);
-        startActivity(intent);
+        intent.putExtra("presentTags", presentTags);
+        intent.putExtra("exclusiveTags", exclusiveTags);
+//        intent.putExtra("searchText", searchText);
+        activityResultLauncher.launch(intent);
+
     }
 
     private void fillChipGroup(HashSet<String> chipGroupTags, ChipGroup chipGroup) {
@@ -206,23 +239,27 @@ public class TagListViewingGrid extends AppCompatActivity {
 
         btnFilterClose.setOnClickListener(view -> filterDialog.dismiss());
 
+        HashSet<String> exclusiveTags = new HashSet<>(tags);
         btnAndFilter.setOnClickListener(view -> {
             searchOperation = 1;
-            startFilterActivity(andTags, "Search (Contains Each Tags)");
+            Boolean b = exclusiveTags.removeAll(andTags);
+            startFilterActivity(andTags, exclusiveTags, "Search (Contains Each Tags)", 1);
 //            searchBarText.setText("Search (Contains Each Tags)");
             filterDialog.dismiss();
         });
 
         btnOrFilter.setOnClickListener(view -> {
             searchOperation = 2;
-            startFilterActivity(orTags, "Search (Contains Tags)");
+            Boolean b = exclusiveTags.removeAll(orTags);
+            startFilterActivity(orTags, exclusiveTags, "Search (Contains Tags)", 2);
 //            searchBarText.setText("Search (Contains Tags)");
             filterDialog.dismiss();
         });
 
         btnNotFilter.setOnClickListener(view -> {
             searchOperation = 3;
-            startFilterActivity(notTags, "Search (Does NOT Contains Tags)");
+            Boolean b = exclusiveTags.removeAll(notTags);
+            startFilterActivity(notTags, exclusiveTags, "Search (Does NOT Contains Tags)", 3);
 //            searchBarText.setText("Search (Does NOT Contains Tags)");
             filterDialog.dismiss();
         });
@@ -236,8 +273,27 @@ public class TagListViewingGrid extends AppCompatActivity {
         });
 
         btnFilterResult.setOnClickListener(view -> {
+            Toast.makeText(this, "Want Result", Toast.LENGTH_LONG).show();
+
             HashSet<String> andBox = intersection(memoryDB.getUIDSet(andTags));
+
+            int i = 0;
+            for (String filePath : andBox) {
+                Log.d("filePath", String.valueOf(i++));
+                Log.d("filePath", filePath);
+            }
+
+            Toast.makeText(this, "Want Result 1", Toast.LENGTH_LONG).show();
+
             HashSet<String> orBox = union(memoryDB.getUIDSet(orTags));
+
+            i = 100;
+            for (String filePath : orBox) {
+                Log.d("filePath", String.valueOf(i++));
+                Log.d("filePath", filePath);
+            }
+
+            Toast.makeText(this, "Want Result 2", Toast.LENGTH_LONG).show();
 
             HashSet<String> intersectAO = new HashSet<>();
             intersectAO.retainAll(andBox);
@@ -246,7 +302,17 @@ public class TagListViewingGrid extends AppCompatActivity {
             filterResult.clear();
             filterResult = filterNot(intersectAO, memoryDB.getUIDSet(notTags));
             Toast.makeText(view.getContext(),"Filtered Results",Toast.LENGTH_LONG).show();
+
+            Toast.makeText(this, "Want Result 3", Toast.LENGTH_LONG).show();
+
+            for (String resultTag : filterResult) {
+                Log.d("TAG_RESULT", resultTag);
+            }
             //start Result activity
+//            Intent intent = new Intent(TagListViewingGrid.this, FilterResult.class);
+//            intent.putExtra("filterResult", filterResult);
+//            startActivity(intent);
+
             filterDialog.dismiss();
         });
 
@@ -262,8 +328,8 @@ public class TagListViewingGrid extends AppCompatActivity {
                 chipGroup = notChipGroup;
                 break;
             default:
-                searchOperation = 1;
-                chipGroup = andChipGroup;
+                searchOperation = 0;
+                filterDialog.dismiss();
                 break;
         }
 
@@ -323,7 +389,7 @@ public class TagListViewingGrid extends AppCompatActivity {
     private HashSet<String> union(HashSet<Integer> tagsUID) {
         HashSet<String> unionSet = new HashSet<String>();
         for(Integer tagUID : tagsUID) {
-            String filesString[] = diskDB.listFilePathsFor(tagUID);
+            String[] filesString = diskDB.getFilePathsFor(tagUID);
             unionSet.addAll(Arrays.asList(filesString));
 //            for (String filePath : filesString){
 //                unionSet.add(filePath);
@@ -334,9 +400,14 @@ public class TagListViewingGrid extends AppCompatActivity {
 
     private HashSet<String> intersection(HashSet<Integer> tagsUID) {
         HashSet<String> intersectionSet = new HashSet<>();
+        for (Integer tagUID: tagsUID)
+            Log.d("TAGUID", String.valueOf(tagUID));
+
         for (Integer tagUID: tagsUID) {
-            String filesString[] = diskDB.listFilePathsFor(tagUID);
+            String[] filesString = diskDB.getFilePathsFor(tagUID);
+//            Arrays.toString(fileString);
             intersectionSet.retainAll(Arrays.asList(filesString));
+//            intersectionSet.retainAll(Arrays.asList(diskDB.getFilePathsFor(tagUID)));
         }
         return intersectionSet;
     }
@@ -346,7 +417,7 @@ public class TagListViewingGrid extends AppCompatActivity {
         HashSet<String> notFilePaths = new HashSet<>();
         ArrayList<String> filePathsForNotUID = new ArrayList<>();
         for (Integer uid: notTags) {
-            Boolean b = Collections.addAll(filePathsForNotUID, diskDB.listFilePathsFor(uid));
+            Boolean b = Collections.addAll(filePathsForNotUID, diskDB.getFilePathsFor(uid));
         }
         notFilePaths.addAll(filePathsForNotUID);
 

@@ -2,6 +2,7 @@ package com.example.dryruntagtofile;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,6 +93,9 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> im
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(view.getContext(),"displaying contents of"+ tags.get(getAdapterPosition()),Toast.LENGTH_LONG).show();
+//                    Intent intent = new Intent(TagListViewingGrid.this, FilterResult.class);
+//                    intent.putExtra("filterResult", filterResult);
+//                    startActivity(intent);
                 }
             });
         }

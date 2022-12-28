@@ -27,6 +27,9 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".FilterResult"
+            android:exported="false" />
+        <activity
             android:name=".TagsMainActivity"
             android:exported="false">
             <meta-data
