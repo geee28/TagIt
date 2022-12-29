@@ -19,17 +19,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
 public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> implements Filterable {
 
     Context ctx;
+    DiskDB diskDB;
+    MemoryDB memoryDB;
     List<String> tags;
     List<String> tagsFiltered;
     Integer image;
     LayoutInflater inflater;
-
     TextView ediTagName;
     EditText editTag;
     ImageView btnEditClose;
@@ -87,15 +89,20 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> im
 
             editIcon.setOnClickListener(view -> {
                 showEditDialog(tagname.getText().toString());
-                Toast.makeText(view.getContext(),"Edit "+ tags.get(getAdapterPosition()),Toast.LENGTH_LONG).show();
             });
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(view.getContext(),"displaying contents of"+ tags.get(getAdapterPosition()),Toast.LENGTH_LONG).show();
-//                    Intent intent = new Intent(TagListViewingGrid.this, FilterResult.class);
-//                    intent.putExtra("filterResult", filterResult);
-//                    startActivity(intent);
+                    diskDB = new DiskDB(ctx);
+                    memoryDB = MemoryDB.getInstance(ctx);
+                    Integer tagUID = memoryDB.getTagIdByName(tags.get(getAdapterPosition()));
+                    String[] filesString = diskDB.getFilePathsFor(tagUID);
+                    Intent intent = new Intent(ctx, FilterResult.class);
+                    ArrayList<String> filesStringArrayList = new ArrayList<>();
+                    filesStringArrayList.addAll(Arrays.asList(filesString));
+                    intent.putStringArrayListExtra("filePaths", filesStringArrayList);
+                    ctx.startActivity(intent);
                 }
             });
         }
@@ -141,7 +148,16 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> im
 
         btnApplyChanges.setOnClickListener(view -> {
             String newTagName = editTag.getText().toString();
-
+            if (newTagName.length()==0 || newTagName.equals("")){
+                newTagName = tagName;
+                editDialog.dismiss();
+                Toast.makeText(view.getContext(),"Tag Unchanged",Toast.LENGTH_LONG).show();
+            }
+            if (tags.contains(newTagName)){
+                newTagName = tagName;
+                editDialog.dismiss();
+                Toast.makeText(view.getContext(),"Tag Already Exists!",Toast.LENGTH_LONG).show();
+            }
             memoryDB.updateTag( tagName,  newTagName);
             tags.remove(tagName);
             tags.add(newTagName);
@@ -164,5 +180,5 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> im
         });
         editDialog.show();
     }
-
 }
+

@@ -54,7 +54,7 @@ public class MemoryDB {
         return tagIds.getOrDefault(tagId, "");
     }
 
-    public int getTagIdByName(int tagName) {return tags.getOrDefault(tagName, -1); }
+    public int getTagIdByName(String tagName) {return tags.getOrDefault(tagName, -1); }
 
     public ArrayList<String> getTags(){
         return new ArrayList(tags.keySet());

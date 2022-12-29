@@ -25,9 +25,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class FilterResult extends AppCompatActivity {
-
     HashSet<String> filePaths;
-
     FilterResultAdapter filterResultAdapter;
 
     @Override
@@ -37,20 +35,16 @@ public class FilterResult extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.filter_result_RV);
         TextView noFilesText = findViewById(R.id.no_result_files_text);
-
         filePaths = new HashSet<>(getIntent().getStringArrayListExtra("filePaths"));
-
         Log.d("TAG_FILE_PATH", filePaths.toString());
         if(filePaths.isEmpty()){
             noFilesText.setVisibility(View.VISIBLE);
             return;
         }
         noFilesText.setVisibility(View.GONE);
-
         filterResultAdapter = new FilterResultAdapter(this, new ArrayList<>(filePaths));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(filterResultAdapter);
-
     }
 }
 
@@ -60,7 +54,6 @@ class FilterResultAdapter extends RecyclerView.Adapter<FilterResultAdapter.ViewH
     ArrayList<File> files = new ArrayList<>();
     MemoryDB memoryDB;
     FileUtilPopup fileContextMenu;
-
 
     public FilterResultAdapter(Context ctx, ArrayList<String> filePaths){
         this.ctx = ctx;

@@ -35,10 +35,8 @@ public class FileUtilPopup {
     boolean actionInit = false;
     String action = "";
     Runnable callback;
-
     MyAdapter adapter;
     int pos;
-
 
     public FileUtilPopup(Context ctx, final View view, MemoryDB memdb){
         this.ctx = ctx;

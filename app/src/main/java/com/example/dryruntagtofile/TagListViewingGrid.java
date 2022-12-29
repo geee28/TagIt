@@ -290,8 +290,6 @@ public class TagListViewingGrid extends AppCompatActivity {
                 Log.d("filePath", filePath);
             }
 
-            Toast.makeText(this, "Want Result 1", Toast.LENGTH_LONG).show();
-
             HashSet<String> orBox = union(memoryDB.getUIDSet(orTags));
 
             i = 100;
@@ -299,8 +297,6 @@ public class TagListViewingGrid extends AppCompatActivity {
                 Log.d("filePath", String.valueOf(i++));
                 Log.d("filePath", filePath);
             }
-
-            Toast.makeText(this, "Want Result 2", Toast.LENGTH_LONG).show();
 
             HashSet<String> intersectAO = new HashSet<>();
             intersectAO.addAll(orBox);
@@ -310,8 +306,6 @@ public class TagListViewingGrid extends AppCompatActivity {
             filterResult.clear();
             filterResult = filterNot(intersectAO, memoryDB.getUIDSet(notTags));
             Toast.makeText(view.getContext(),"Filtered Results",Toast.LENGTH_LONG).show();
-
-            Toast.makeText(this, "Want Result 3", Toast.LENGTH_LONG).show();
 
             Log.d("TAG_RESULT_LENGTH", String.valueOf(filterResult.size()));
             for (String resultTag : filterResult) {
@@ -345,54 +339,8 @@ public class TagListViewingGrid extends AppCompatActivity {
         fillChipGroup(andTags, andChipGroup);
         fillChipGroup(orTags, orChipGroup);
         fillChipGroup(notTags, notChipGroup);
-
         filterDialog.show();
     }
-
-
-
-//    private void showEditDialog(String tagName) {
-//        MemoryDB memoryDB = new MemoryDB(this);
-//
-//        Dialog editDialog = new Dialog(this, R.style.dialog_theme);
-//        editDialog.setContentView(R.layout.edit_tag_layout);
-//        editDialog.setCancelable(true);
-//        editDialog.setCanceledOnTouchOutside(true);
-//
-//
-//        ediTagName = editDialog.findViewById(R.id.edit_tag_name);
-//        editTag = editDialog.findViewById(R.id.edit_name_field);
-//        btnEditClose = editDialog.findViewById(R.id.btn_edit_tag_close);
-//        btnApplyChanges = editDialog.findViewById(R.id.btn_apply_changes);
-//        btnDeleteTag = editDialog.findViewById(R.id.btn_delete_tag);
-//
-//        ediTagName.setText(tagName);
-//
-//        btnEditClose.setOnClickListener(view -> editDialog.dismiss());
-//
-//        btnApplyChanges.setOnClickListener(view -> {
-//            String newTagName = editTag.getText().toString();
-//
-//            memoryDB.updateTag( tagName,  newTagName);
-//            tags.remove(tagName);
-//            tags.add(newTagName);
-//            Toast.makeText(view.getContext(),"Tag Changed",Toast.LENGTH_LONG).show();
-//            editDialog.dismiss();
-//        });
-//
-//        btnDeleteTag.setOnClickListener(view -> {
-//            try {
-//                memoryDB.removeTag(tagName);
-//                tags.remove(tagName);
-//                Toast.makeText(view.getContext(),"Tag Deleted",Toast.LENGTH_LONG).show();
-//            } catch (Exception e) {
-//                Toast.makeText(view.getContext(),"Tag Could NOT be Deleted",Toast.LENGTH_LONG).show();
-//                throw new RuntimeException(e);
-//            }
-//            editDialog.dismiss();
-//        });
-//        editDialog.show();
-//    }
 
 
     private HashSet<String> union(HashSet<Integer> tagsUID) {
@@ -400,9 +348,6 @@ public class TagListViewingGrid extends AppCompatActivity {
         for(Integer tagUID : tagsUID) {
             String[] filesString = diskDB.getFilePathsFor(tagUID);
             unionSet.addAll(Arrays.asList(filesString));
-//            for (String filePath : filesString){
-//                unionSet.add(filePath);
-//            }
         }
         return unionSet;
     }
@@ -415,20 +360,19 @@ public class TagListViewingGrid extends AppCompatActivity {
                 intersectionSet.addAll(Arrays.asList(diskDB.getFilePathsFor(tagUID)));
                 first = false;
             }
-            //intersectionSet.retainAll(Arrays.asList(filesString));
             intersectionSet.retainAll(Arrays.asList(diskDB.getFilePathsFor(tagUID)));
         }
         return intersectionSet;
     }
 
     private HashSet<String> filterNot(HashSet<String> filePaths, HashSet<Integer> notTags) {
-        HashSet<String> notFilePaths = new HashSet<>();
         ArrayList<String> filePathsForNotUID = new ArrayList<>();
         for (Integer uid: notTags) {
-            Boolean b = Collections.addAll(filePathsForNotUID, diskDB.getFilePathsFor(uid));
+            filePathsForNotUID.addAll(Arrays.asList(diskDB.getFilePathsFor(uid)));
         }
-        notFilePaths.addAll(filePathsForNotUID);
-
+        if (filePaths == null || filePaths.size() == 0) {
+            filePaths = new HashSet<>(diskDB.getTaggedFiles().keySet());
+        }
         for(String eachFile: filePathsForNotUID){
             if (filePaths.contains(eachFile)){
                 filePaths.remove(eachFile);
