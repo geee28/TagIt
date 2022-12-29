@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -100,7 +101,7 @@ public class FilterTagListSelection extends AppCompatActivity {
     }
 }
 
-class CheckedTagsAdapter extends RecyclerView.Adapter<CheckedTagsAdapter.ViewHolder> {
+class CheckedTagsAdapter extends RecyclerView.Adapter<CheckedTagsAdapter.ViewHolder> implements Filterable {
 
     Context ctx;
     List<String> tags;
@@ -123,21 +124,26 @@ class CheckedTagsAdapter extends RecyclerView.Adapter<CheckedTagsAdapter.ViewHol
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
                 FilterResults filterResults = new FilterResults();
-                if (charSequence.length()==0 || charSequence == null){
-                    filterResults.values = availableTags;
-                    filterResults.count = availableTags.size();
-                }
-                else{
-                    String searchChar = charSequence.toString().toLowerCase();
-                    List<String> filteredResults = new ArrayList<>();
-                    for(String tagName: tags){
-                        if(tagName.toLowerCase().contains(searchChar)){
-                            filteredResults.add(tagName);
-                        }
+                try{
+                    if (charSequence.length()==0 || charSequence == null){
+                        filterResults.values = availableTags;
+                        filterResults.count = availableTags.size();
                     }
-                    filterResults.values = filteredResults;
-                    filterResults.count = filteredResults.size();
+                    else{
+                        String searchChar = charSequence.toString().toLowerCase();
+                        List<String> filteredResults = new ArrayList<>();
+                        for(String tagName: tags){
+                            if(tagName.toLowerCase().contains(searchChar)){
+                                filteredResults.add(tagName);
+                            }
+                        }
+                        filterResults.values = filteredResults;
+                        filterResults.count = filteredResults.size();
+                    }
+                }catch (Exception e) {
+                    Log.d("Filter_result", e.toString());
                 }
+
                 return filterResults;
             }
 
