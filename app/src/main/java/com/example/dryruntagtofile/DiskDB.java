@@ -23,7 +23,7 @@ public class DiskDB extends SQLiteOpenHelper {
     private static String tableTagToFiles = Schema.tableTagToFiles;
     private static String tableFilesToTag = Schema.tableFileToTags;
     private static String tableOps = Schema.tableOps;
-    private final String delimeter = ";";
+    private final String delimeter = ";"; // change in ops log too
 
     private SQLiteDatabase db = null;
 
