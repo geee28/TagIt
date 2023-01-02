@@ -43,6 +43,7 @@ public class FilterTagListSelection extends AppCompatActivity {
         this.setSupportActionBar(toolbar);
         this.getSupportActionBar().setTitle("");
 
+
         ArrayList<String> tags = this.getIntent().getStringArrayListExtra("tags");
         ArrayList<String> availableTags = tags;
         Integer searchOperation = this.getIntent().getIntExtra("searchOperation", 0);
@@ -53,7 +54,7 @@ public class FilterTagListSelection extends AppCompatActivity {
             availableTags.removeAll(exclusiveTags);
         }
 
-        adapter = new CheckedTagsAdapter(this, tags, availableTags, presentTags);
+        adapter = new CheckedTagsAdapter(this, availableTags, presentTags);
         RecyclerView availableTagsView = findViewById(R.id.tag_selection_list);
         availableTagsView.setLayoutManager(new LinearLayoutManager(this));
         availableTagsView.setAdapter(adapter);
@@ -101,15 +102,15 @@ public class FilterTagListSelection extends AppCompatActivity {
 class CheckedTagsAdapter extends RecyclerView.Adapter<CheckedTagsAdapter.ViewHolder> implements Filterable {
 
     Context ctx;
-    List<String> tags;
+    List<String> tagsForFilter;
     List<String> availableTags;
     ArrayList<String> presentTags;
     HashSet<String> tagsFiltered = new HashSet<>();
     LayoutInflater inflater;
 
-    public CheckedTagsAdapter(Context ctx, ArrayList<String> tags, ArrayList<String> availableTags, ArrayList<String> presentTags){
+    public CheckedTagsAdapter(Context ctx, ArrayList<String> availableTags, ArrayList<String> presentTags){
         this.ctx = ctx;
-        this.tags = tags;
+        this.tagsForFilter = availableTags;
         this.presentTags = presentTags;
         this.availableTags = availableTags;
         this.inflater = LayoutInflater.from(ctx);
@@ -123,13 +124,13 @@ class CheckedTagsAdapter extends RecyclerView.Adapter<CheckedTagsAdapter.ViewHol
                 FilterResults filterResults = new FilterResults();
                 try{
                     if (charSequence.length()==0 || charSequence == null){
-                        filterResults.values = availableTags;
-                        filterResults.count = availableTags.size();
+                        filterResults.values = tagsForFilter;
+                        filterResults.count = tagsForFilter.size();
                     }
                     else{
                         String searchChar = charSequence.toString().toLowerCase();
                         List<String> filteredResults = new ArrayList<>();
-                        for(String tagName: tags){
+                        for(String tagName: tagsForFilter){
                             if(tagName.toLowerCase().contains(searchChar)){
                                 filteredResults.add(tagName);
                             }
@@ -146,7 +147,7 @@ class CheckedTagsAdapter extends RecyclerView.Adapter<CheckedTagsAdapter.ViewHol
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                tags = (List<String>) filterResults.values;
+                availableTags = (List<String>) filterResults.values;
                 notifyDataSetChanged();
             }
         };
@@ -190,12 +191,12 @@ class CheckedTagsAdapter extends RecyclerView.Adapter<CheckedTagsAdapter.ViewHol
 
     @Override
     public void onBindViewHolder(@NonNull CheckedTagsAdapter.ViewHolder holder, int position) {
-        holder.tagName.setText(tags.get(position));
+        holder.tagName.setText(availableTags.get(position));
         holder.checkBox.setVisibility(View.VISIBLE);
-        if(presentTags.size() > 0 && presentTags.contains(tags.get(position))){
+        if(presentTags.size() > 0 && presentTags.contains(availableTags.get(position))){
             holder.checkBox.setChecked(true);
         }
-        if(tags != null && tags.size() > 0) {
+        if(availableTags != null && availableTags.size() > 0) {
             /*holder.tagHolder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -212,11 +213,11 @@ class CheckedTagsAdapter extends RecyclerView.Adapter<CheckedTagsAdapter.ViewHol
             holder.checkBox.setOnClickListener(view -> {
                 if (holder.checkBox.isChecked()) {
 //                        filteredTags.add(tags.get(position));
-                    tagsFiltered.add(tags.get(holder.getAdapterPosition()));
+                    tagsFiltered.add(availableTags.get(holder.getAdapterPosition()));
                 }
                 else {
 //                        filteredTags.remove(tags.get(position));
-                    tagsFiltered.remove(tags.get(holder.getAdapterPosition()));
+                    tagsFiltered.remove(availableTags.get(holder.getAdapterPosition()));
                 }
             });
         }

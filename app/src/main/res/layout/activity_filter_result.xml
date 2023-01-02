@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:textAlignment="center"
-        android:text="No File Found!"
+        android:text="No Such Files Exists!"
         android:visibility="gone"/>
 
     <androidx.recyclerview.widget.RecyclerView

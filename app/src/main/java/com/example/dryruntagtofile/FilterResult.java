@@ -38,6 +38,9 @@ public class FilterResult extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.filter_result_RV);
         TextView noFilesText = findViewById(R.id.no_result_files_text);
 
+
+//        noFilterFileResult = findViewById(R.id.no_filter_file_result);
+
         filePaths = new HashSet<>(getIntent().getStringArrayListExtra("filePaths"));
 
         Log.d("TAG_FILE_PATH", filePaths.toString());

@@ -283,34 +283,23 @@ public class TagListViewingGrid extends AppCompatActivity {
             Toast.makeText(this, "Want Result", Toast.LENGTH_LONG).show();
 
             HashSet<String> andBox = intersection(memoryDB.getUIDSet(andTags));
-
-            int i = 0;
-            for (String filePath : andBox) {
-                Log.d("filePath", String.valueOf(i++));
-                Log.d("filePath", filePath);
-            }
+            Log.d("andResult", andBox.toString());
 
             HashSet<String> orBox = union(memoryDB.getUIDSet(orTags));
-
-            i = 100;
-            for (String filePath : orBox) {
-                Log.d("filePath", String.valueOf(i++));
-                Log.d("filePath", filePath);
-            }
+            Log.d("orResult", orBox.toString());
 
             HashSet<String> intersectAO = new HashSet<>();
             intersectAO.addAll(orBox);
             intersectAO.addAll(andBox);
+            Log.d("intersectResult", intersectAO.toString());
 
-            Log.d("TAG_RESULT_LENGTH", intersectAO.toString());
             filterResult.clear();
             filterResult = filterNot(intersectAO, memoryDB.getUIDSet(notTags));
             Toast.makeText(view.getContext(),"Filtered Results",Toast.LENGTH_LONG).show();
 
             Log.d("TAG_RESULT_LENGTH", String.valueOf(filterResult.size()));
-            for (String resultTag : filterResult) {
-                Log.d("TAG_RESULT", resultTag);
-            }
+            Log.d("TAG_RESULT_LENGTH", filterResult.toString());
+
             //start Result activity
             Intent intent = new Intent(TagListViewingGrid.this, FilterResult.class);
             intent.putStringArrayListExtra("filePaths", new ArrayList<String>(filterResult));
@@ -371,7 +360,9 @@ public class TagListViewingGrid extends AppCompatActivity {
             filePathsForNotUID.addAll(Arrays.asList(diskDB.getFilePathsFor(uid)));
         }
         if (filePaths == null || filePaths.size() == 0) {
-            filePaths = new HashSet<>(diskDB.getTaggedFiles().keySet());
+            if (andChipGroup.getChildCount() == 0 && orChipGroup.getChildCount() == 0) {
+                filePaths = new HashSet<>(diskDB.getTaggedFiles().keySet());
+            }
         }
         for(String eachFile: filePathsForNotUID){
             if (filePaths.contains(eachFile)){

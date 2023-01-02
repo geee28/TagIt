@@ -31,17 +31,13 @@
         </androidx.appcompat.widget.Toolbar>
     </LinearLayout>
 
-<!--    <TextView-->
-<!--        android:id="@+id/textView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="TextView" />-->
-
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/tag_selection_list"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.92"/>
+        android:id="@+id/tag_selection_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.92">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
     <Button
         android:id="@+id/done_selection"
@@ -50,9 +46,7 @@
         android:layout_weight="0.01"
         android:insetTop="0dp"
         android:insetBottom="0dp"
-        android:text="confirm"
-        />
-
+        android:text="confirm" />
 
 
 </LinearLayout>
