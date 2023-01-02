@@ -17,11 +17,11 @@
         android:background="#8298E7">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/selection_search"
+            android:id="@+id/selection_search_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
-                android:id="@+id/search_bar_text"
+                android:id="@+id/filter_search_bar_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"

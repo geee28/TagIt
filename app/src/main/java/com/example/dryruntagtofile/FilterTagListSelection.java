@@ -38,8 +38,8 @@ public class FilterTagListSelection extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter_tag_list_selection);
 
-        Toolbar toolbar = findViewById(R.id.tbtoolbar);
-        TextView searchBarText = findViewById(R.id.search_bar_text);
+        Toolbar toolbar = findViewById(R.id.selection_search_toolbar);
+        TextView searchBarText = findViewById(R.id.filter_search_bar_text);
         this.setSupportActionBar(toolbar);
         this.getSupportActionBar().setTitle("");
 
@@ -48,7 +48,7 @@ public class FilterTagListSelection extends AppCompatActivity {
         Integer searchOperation = this.getIntent().getIntExtra("searchOperation", 0);
 
         presentTags = this.getIntent().getStringArrayListExtra("presentTags");
-        ArrayList<String> exclusiveTags = this.getIntent().getStringArrayListExtra("exclusiveTags");;
+        ArrayList<String> exclusiveTags = this.getIntent().getStringArrayListExtra("exclusiveTags");
         if (exclusiveTags != null && exclusiveTags.size() > 0) {
             availableTags.removeAll(exclusiveTags);
         }
@@ -58,19 +58,16 @@ public class FilterTagListSelection extends AppCompatActivity {
         availableTagsView.setLayoutManager(new LinearLayoutManager(this));
         availableTagsView.setAdapter(adapter);
 
-        findViewById(R.id.done_selection).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ArrayList<String> selectedTags = new ArrayList<>();
+        findViewById(R.id.done_selection).setOnClickListener(view -> {
+            ArrayList<String> selectedTags = new ArrayList<>();
 //                selectedTags.addAll(filteredTags);
-                selectedTags.addAll(adapter.getSelectedTags());
-                Intent intent = new Intent();
-                intent.putStringArrayListExtra("selected_tags", selectedTags);
-                intent.putExtra("searchOperation", searchOperation);
+            selectedTags.addAll(adapter.getSelectedTags());
+            Intent intent = new Intent();
+            intent.putStringArrayListExtra("selected_tags", selectedTags);
+            intent.putExtra("searchOperation", searchOperation);
 
-                setResult(RESULT_OK, intent);
-                finish();
-            }
+            setResult(RESULT_OK, intent);
+            finish();
         });
     }
 
@@ -212,17 +209,14 @@ class CheckedTagsAdapter extends RecyclerView.Adapter<CheckedTagsAdapter.ViewHol
                     }
                 }
             });*/
-            holder.checkBox.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (holder.checkBox.isChecked()) {
+            holder.checkBox.setOnClickListener(view -> {
+                if (holder.checkBox.isChecked()) {
 //                        filteredTags.add(tags.get(position));
-                        tagsFiltered.add(tags.get(holder.getAdapterPosition()));
-                    }
-                    else {
+                    tagsFiltered.add(tags.get(holder.getAdapterPosition()));
+                }
+                else {
 //                        filteredTags.remove(tags.get(position));
-                        tagsFiltered.remove(tags.get(holder.getAdapterPosition()));
-                    }
+                    tagsFiltered.remove(tags.get(holder.getAdapterPosition()));
                 }
             });
         }

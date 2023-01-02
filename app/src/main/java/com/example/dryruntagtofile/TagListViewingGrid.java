@@ -247,7 +247,7 @@ public class TagListViewingGrid extends AppCompatActivity {
             usedTags.addAll(orTags);
             usedTags.addAll(notTags);
             startFilterActivity(andTags, usedTags, "Search (Contains Each Tags)", 1);
-            searchBarText.setText("Search (Contains Each Tags)");
+//            searchBarText.setText("Search (Contains Each Tags)");
             filterDialog.dismiss();
         });
 
