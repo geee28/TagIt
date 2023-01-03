@@ -21,6 +21,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -108,10 +109,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
                         Intent intent = new Intent();
                         intent.setAction(Intent.ACTION_VIEW);
                         String type = URLConnection.guessContentTypeFromName(selectedFile.getName()); // get the closest guess for file mime type and corresponding apps to open for it
-                        intent.setDataAndType(Uri.parse(selectedFile.getAbsolutePath()), type);
+                        intent.setDataAndType(FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", selectedFile), type);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         context.startActivity(intent);
                     }catch (Exception e){
+                        Log.d("FILE_OPEN", e.toString());
                         Toast.makeText(context.getApplicationContext(),"Cannot open the file",Toast.LENGTH_SHORT).show();
                     }
                 }
