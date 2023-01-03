@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Stack;
 
 public class FileListActivity extends AppCompatActivity {
@@ -91,11 +92,11 @@ public class FileListActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(browsePath.isEmpty()) {
-            super.onBackPressed();
-        } else {
-            browsePath.pop();
+        browsePath.pop();
+        if(!browsePath.isEmpty()){
             fileBrowser.updateList(new File(browsePath.peek()));
+        } else {
+            this.finish();
         }
     }
 }
