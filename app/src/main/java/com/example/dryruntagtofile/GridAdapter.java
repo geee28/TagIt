@@ -1,7 +1,9 @@
 package com.example.dryruntagtofile;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -167,17 +169,30 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> im
         });
 
         btnDeleteTag.setOnClickListener(view -> {
-            try {
-                memoryDB.removeTag(tagName);
-                tags.remove(tagName);
-                Toast.makeText(view.getContext(),"Tag Deleted",Toast.LENGTH_LONG).show();
-            } catch (Exception e) {
-                Toast.makeText(view.getContext(),"Tag Could NOT be Deleted",Toast.LENGTH_LONG).show();
-                throw new RuntimeException(e);
-            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+            builder.setMessage("Are you sure you want to delete this tag?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            try {
+                                memoryDB.removeTag(tagName);
+                                tags.remove(tagName);
+                                Toast.makeText(view.getContext(),"Tag Deleted",Toast.LENGTH_LONG).show();
+                                notifyDataSetChanged();
+                            } catch (Exception e) {
+                                Toast.makeText(view.getContext(),"Tag Could NOT be Deleted",Toast.LENGTH_LONG).show();
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }).setNegativeButton("Cancel",null);
+
+            AlertDialog confirmDelete = builder.create();
+            confirmDelete.show();
+
             editDialog.dismiss();
             notifyDataSetChanged();
         });
         editDialog.show();
     }
+
 }

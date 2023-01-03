@@ -53,7 +53,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
                 if(intent.getAction().equals("event_received")){
                     Log.d("event_received", intent.getAction());
                     //memdb.refreshMemoryState();
-                    MyAdapter.this.updateList(new File(browsePath.peek()));
+                    if(!browsePath.isEmpty()) {
+                        MyAdapter.this.updateList(new File(browsePath.peek()));
+                    }
                 }
             }
         };

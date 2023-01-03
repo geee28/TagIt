@@ -42,13 +42,6 @@
             android:name=".FilterResult"
             android:exported="false" />
         <activity
-            android:name=".TagsMainActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
             android:name=".TagListViewingGrid"
             android:exported="false"
             android:theme="@style/Theme.DryRunTagToFile.NoActionBar">

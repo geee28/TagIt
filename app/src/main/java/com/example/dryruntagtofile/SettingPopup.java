@@ -78,7 +78,7 @@ public class SettingPopup {
         try {
             fileTags.addAll(Arrays.asList(memdb.getTagsForFile(filePath)));
         } catch (Exception e){
-            Log.e("TAG_CHECK", e.toString());
+
         }
         for(String ftag : fileTags){
             addTagChip(tagContainer, ftag, filePath);
