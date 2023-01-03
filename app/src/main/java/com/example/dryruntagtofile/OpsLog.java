@@ -215,7 +215,7 @@ public class OpsLog {
         return this.db.query(Schema.tableFileToTags, new String[]{Schema.FileToTags.tags, Schema.FileToTags.filePath}, null, null, null, null, null, offset+","+limit);
     }
 
-    public boolean deleteTagData(int tagId){
+    /*public boolean deleteTagData(int tagId){
         db.beginTransaction();
         try {
             int limit = 50;
@@ -247,6 +247,34 @@ public class OpsLog {
             db.endTransaction();
             return true;
         } catch(Exception e){
+            Log.e("TAG_DELETE", e.toString());
+            db.endTransaction();
+            return false;
+        }
+    }*/
+
+    // version 2
+    public boolean deleteTagData(int tagId){
+        db.beginTransaction();
+        try {
+            Cursor c = db.query(Schema.tableTagToFiles, new String[]{Schema.TagToFiles.fileList}, Schema.TagToFiles.tag_uid+"="+tagId, null, null, null, null);
+            c.moveToFirst();
+            String[] filePaths = c.getString(0).split(";"); // change when delimeter changed
+            int filePathsN = filePaths.length;
+            for(int i = 0; i < filePathsN; i++){
+                String path = filePaths[i];
+                Log.d("test_run_delete-tag", path);
+                // detahc from single file
+                diskDB.detachTag(tagId, path);
+            }
+            // remove tag from database
+            diskDB.removeTag(tagId);
+            c.close();
+            db.setTransactionSuccessful();
+            db.endTransaction();
+            return true;
+        } catch(Exception e){
+            Log.e("TAG_DELETE", e.toString());
             db.endTransaction();
             return false;
         }

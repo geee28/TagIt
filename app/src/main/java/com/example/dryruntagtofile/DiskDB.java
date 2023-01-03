@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.hardware.lights.LightState;
 import android.util.Log;
 
 import java.nio.file.Paths;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 public class DiskDB extends SQLiteOpenHelper {
 
@@ -21,7 +23,7 @@ public class DiskDB extends SQLiteOpenHelper {
     private static String tableTagToFiles = Schema.tableTagToFiles;
     private static String tableFilesToTag = Schema.tableFileToTags;
     private static String tableOps = Schema.tableOps;
-    private final String delimeter = ";";
+    private final String delimeter = ";"; // change in ops log too
 
     private SQLiteDatabase db = null;
 
@@ -179,7 +181,7 @@ public class DiskDB extends SQLiteOpenHelper {
         Cursor c = db.query(tableTagToFiles, new String[]{Schema.TagToFiles.fileList}, Schema.TagToFiles.tag_uid+"="+tagId, null, null, null, null, l);
         c.moveToFirst();
         // use FileList class to put to array
-        String filePaths[] = c.getString(0).split(delimeter);
+        String filePaths[] = (c.getString(0).split(delimeter));
         FileItem[] files = new FileItem[filePaths.length];
         for(int i = 0; i < filePaths.length; i++){
             files[i] = new FileItem(filePaths[i]);
@@ -188,8 +190,18 @@ public class DiskDB extends SQLiteOpenHelper {
         return new FileList(files);
     }
 
-    public void listFilesFor(int tagIds[]){
-
+    public String[] getFilePathsFor(int tagId){
+        try {
+            Cursor c = db.query(tableTagToFiles, new String[]{Schema.TagToFiles.fileList}, Schema.TagToFiles.tag_uid+"="+tagId, null, null, null, null);
+            c.moveToFirst();
+            String filePaths[] = c.getString(0).split(delimeter);
+            c.close();
+            Log.d("TagFiles", Arrays.toString(filePaths));
+            return filePaths;
+        } catch (Exception e){
+            Log.e("TagFiles", e.toString());
+        }
+        return new String[]{};
     }
 
     @Override
