@@ -88,7 +88,6 @@ public class MemoryDB {
 
     public void removeTag(String tagName) throws Exception{
         int id = tags.get(tagName);
-        diskDB.removeTag(id);
 
         tags.remove(tagName);
         tagIds.remove(id);
