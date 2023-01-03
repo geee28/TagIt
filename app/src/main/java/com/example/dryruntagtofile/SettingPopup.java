@@ -78,10 +78,11 @@ public class SettingPopup {
         try {
             fileTags.addAll(Arrays.asList(memdb.getTagsForFile(filePath)));
         } catch (Exception e){
-
+            Log.e("TAG_CHECK", e.toString());
         }
         for(String ftag : fileTags){
-            LinearLayout tagChip = (LinearLayout) inflater.inflate(R.layout.tag_chip, null);
+            addTagChip(tagContainer, ftag, filePath);
+           /* LinearLayout tagChip = (LinearLayout) inflater.inflate(R.layout.tag_chip, null);
             LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             p.setMarginStart(5);
             p.setMarginEnd(5);
@@ -107,8 +108,39 @@ public class SettingPopup {
                     }
                 }
             });
-            tagContainer.addView(tagChip);
+            tagContainer.addView(tagChip);*/
         }
+    }
+
+    private void addTagChip(FlexboxLayout tagContainer, String ftag, String filePath){
+        LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(LAYOUT_INFLATER_SERVICE);
+        LinearLayout tagChip = (LinearLayout) inflater.inflate(R.layout.tag_chip, null);
+        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        p.setMarginStart(5);
+        p.setMarginEnd(5);
+        tagChip.setLayoutParams(p);
+        TextView tagName = tagChip.findViewById(R.id.tag_name);
+        ImageButton removeBtn = tagChip.findViewById(R.id.remove_tag);
+        tagName.setText(ftag);
+        removeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    memdb.removeTagFromFile(filePath, ftag);
+                } catch (Exception e) {
+
+                } finally {
+                    fileTags.remove(ftag);
+                    tagContainer.removeView(tagChip);
+                    if(fileTags.size() == 0){
+                        tagContainer.setVisibility(View.GONE);
+                        popupRoot.findViewById(R.id.no_tag_text).setVisibility(View.VISIBLE);
+                    }
+                    updateTagLists();
+                }
+            }
+        });
+        tagContainer.addView(tagChip);
     }
 
     private void refreshAvailableTagList(){
@@ -182,6 +214,11 @@ public class SettingPopup {
                         memdb.addTag(tagName);
                         memdb.addTagToFile(file.getAbsolutePath(), tagName);
                         updateTagLists();
+                        tagContainer.setVisibility(View.VISIBLE);
+                        popupRoot.findViewById(R.id.no_tag_text).setVisibility(View.GONE);
+                        /*Log.d("TAG_CHECK", Arrays.toString(memdb.getTagsForFile(filePath)));*/
+                        /*FlexboxLayout tagContainer = (FlexboxLayout) popupRoot.findViewById(R.id.tag_container);
+                        addTagChip(tagContainer, tagName, file.getAbsolutePath());*/
                     } catch (Exception e){
                         /*new AlertDialog.Builder(ctx).setMessage(e.getMessage()).setTitle("Error").setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
