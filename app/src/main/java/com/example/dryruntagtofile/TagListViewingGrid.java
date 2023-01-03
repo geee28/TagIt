@@ -280,8 +280,6 @@ public class TagListViewingGrid extends AppCompatActivity {
         });
 
         btnFilterResult.setOnClickListener(view -> {
-            Toast.makeText(this, "Want Result", Toast.LENGTH_LONG).show();
-
             HashSet<String> andBox = intersection(memoryDB.getUIDSet(andTags));
             Log.d("andResult", andBox.toString());
 
@@ -295,8 +293,6 @@ public class TagListViewingGrid extends AppCompatActivity {
 
             filterResult.clear();
             filterResult = filterNot(intersectAO, memoryDB.getUIDSet(notTags));
-            Toast.makeText(view.getContext(),"Filtered Results",Toast.LENGTH_LONG).show();
-
             Log.d("TAG_RESULT_LENGTH", String.valueOf(filterResult.size()));
             Log.d("TAG_RESULT_LENGTH", filterResult.toString());
 
@@ -307,7 +303,6 @@ public class TagListViewingGrid extends AppCompatActivity {
 
             filterDialog.dismiss();
         });
-
 
         switch(searchOperation) {
             case 1:
@@ -341,6 +336,7 @@ public class TagListViewingGrid extends AppCompatActivity {
         return unionSet;
     }
 
+
     private HashSet<String> intersection(HashSet<Integer> tagsUID) {
         HashSet<String> intersectionSet = new HashSet<>();
         boolean first = true;
@@ -349,10 +345,13 @@ public class TagListViewingGrid extends AppCompatActivity {
                 intersectionSet.addAll(Arrays.asList(diskDB.getFilePathsFor(tagUID)));
                 first = false;
             }
-            intersectionSet.retainAll(Arrays.asList(diskDB.getFilePathsFor(tagUID)));
+            else {
+                intersectionSet.retainAll(Arrays.asList(diskDB.getFilePathsFor(tagUID)));
+            }
         }
         return intersectionSet;
     }
+
 
     private HashSet<String> filterNot(HashSet<String> filePaths, HashSet<Integer> notTags) {
         ArrayList<String> filePathsForNotUID = new ArrayList<>();

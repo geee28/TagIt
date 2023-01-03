@@ -93,7 +93,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> im
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(view.getContext(),"displaying contents of"+ tags.get(getAdapterPosition()),Toast.LENGTH_LONG).show();
+                    //Toast.makeText(view.getContext(),"displaying contents of"+ tags.get(getAdapterPosition()),Toast.LENGTH_LONG).show();
                     diskDB = new DiskDB(ctx);
                     memoryDB = MemoryDB.getInstance(ctx);
                     Integer tagUID = memoryDB.getTagIdByName(tags.get(getAdapterPosition()));

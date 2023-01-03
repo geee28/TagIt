@@ -71,23 +71,4 @@ public class TagsMainActivity extends AppCompatActivity{
         chipGroup.setVisibility(View.VISIBLE);
     }
 
-
-    /*
-    private HashSet<String> union(ArrayList<Integer> tags) {
-        HashSet<String> unionSet = new HashSet<String>();
-        for(Integer tagUID : tags) {
-            //getFilesForATag()
-            String filesString = getFilesForATag(tagUID);
-            ArrayList<String> files = (ArrayList<String>) Arrays.asList(filesString.split(";"));
-            for (String filePath : files){
-                unionSet.add(filePath);
-            }
-        }
-        return unionSet;
-    }
-
-    private HashSet<String> intersection(ArrayList<Integer> tags) {}
-    */
-
-
 }

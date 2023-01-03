@@ -41,6 +41,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
+        app:cornerRadius="10dp"
+        android:backgroundTint="#8298E7"
         android:layout_marginVertical="10dp"
         android:insetTop="0dp"
         android:insetBottom="0dp"
@@ -52,7 +54,9 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
         android:layout_marginVertical="10dp"
+        android:backgroundTint="#D32F2F"
         android:insetTop="0dp"
+        app:cornerRadius="10dp"
         android:insetBottom="0dp"
         android:text="Delete Tag" />
 

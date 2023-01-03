@@ -165,19 +165,6 @@ class CheckedTagsAdapter extends RecyclerView.Adapter<CheckedTagsAdapter.ViewHol
             tagName = itemView.findViewById(R.id.grid_tname);
             tagHolder = itemView.findViewById(R.id.tag_cont);
             itemView.findViewById(R.id.grid_image).setVisibility(View.GONE);
-            /*itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (checkBox.isChecked()) {
-//                        filteredTags.add(tags.get(position));
-                        tagsFiltered.add(tags.get(getAdapterPosition()));
-                    }
-                    else {
-//                        filteredTags.remove(tags.get(position));
-                        tagsFiltered.remove(tags.get(getAdapterPosition()));
-                    }
-                }
-            });*/
         }
     }
 

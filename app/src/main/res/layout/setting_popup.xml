@@ -114,9 +114,9 @@
             android:textColor="@color/white"
             android:id="@+id/add_tag_btn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:text="Add Tag"
-            android:background="@color/design_default_color_primary"
+            android:backgroundTint="#8298E7"
             android:layout_marginHorizontal="50dp"
             />
 
